@@ -1,8 +1,8 @@
 #!/bin/bash
 
-export MESASDK_ROOT=/Applications/mesasdk
+export MESASDK_ROOT="/mnt/home/ajermyn/Software/MESA/mesasdk"
 source $MESASDK_ROOT/bin/mesasdk_init.sh
-export MESA_DIR="/Users/ajermyn/Dropbox/Software/MESA/mesa-15140"
+export MESA_DIR="/mnt/home/ajermyn/Software/MESA/mesa-15140"
 export OMP_NUM_THREADS=1
 
 mkdir output
@@ -13,7 +13,7 @@ do
     rm -r runs/$j
     cp -R template runs/$j    
     cd runs/$j
-    sed -i .bak "s/MMM/$j/" inlist_grid   
+    sed -i .bak "s/MMM/$j/" inlist_project   
     echo "Compiling..."
     ./mk > mk.out
     echo "Running Model..."

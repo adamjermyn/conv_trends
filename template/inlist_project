@@ -35,6 +35,8 @@
 
 &controls
 
+      initial_mass = MMM
+      Teff_lower_limit = 5600
 
       ! MAIN PARAMS
       mixing_length_alpha = 1.6
