@@ -34,11 +34,8 @@
       use_Ledoux_criterion = .true.
 
       ! OUTPUT
-      !photostep = 1000
       profile_interval = 10
       history_interval = 1
-      !terminal_cnt = 10
-      !write_header_frequency = 10
 
       ! WHEN TO STOP
       xa_central_lower_limit_species(1) = 'h1'
