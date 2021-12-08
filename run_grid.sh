@@ -3,7 +3,7 @@
 export MESASDK_ROOT="/mnt/home/ajermyn/Software/MESA/mesasdk"
 source $MESASDK_ROOT/bin/mesasdk_init.sh
 export MESA_DIR="/mnt/home/ajermyn/Software/MESA/mesa-15140"
-export OMP_NUM_THREADS=1
+export OMP_NUM_THREADS=2
 
 
 echo "Compiling..."
