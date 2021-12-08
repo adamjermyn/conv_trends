@@ -940,10 +940,10 @@
             nu = nu + 4d0 * crad * pow4(s%T(k)) / (15d0 * clight * s%opacity(k) * pow2(s%rho(k)))
 
             dr = s%dm(k) / (4d0 * pi * pow2(s%rmid(k)) * s%rho(k))
-            
+
             alpha_avg = alpha_avg + dr * alpha
             nu_avg = nu_avg + dr * nu
-            gradr_sub_grada_avg = gradr_sub_grada_avg + dr * (s%gradr(k) - s%grada(k))
+            gradr_sub_grada_avg = gradr_sub_grada_avg + dr * max(0d0,s%gradr(k) - s%grada(k))
             g_avg = g_avg + dr * s%grav(k)
          end do
          alpha_avg = alpha_avg / dz
