@@ -2,7 +2,7 @@
 
 &star_job
 
-      create_pre_main_sequence_model = .true.
+      create_pre_main_sequence_model = .false.
       pgstar_flag = .false.
 
 
