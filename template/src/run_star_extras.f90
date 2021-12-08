@@ -927,6 +927,8 @@
 
          alpha_avg = 0d0
          nu_avg = 0d0
+         g_avg = 0d0
+         gradr_sub_grada_avg = 0d0
          do k=sc_top,sc_bottom
             alpha = 16d0 * boltz_sigma * pow3(s%T(k)) / (3d0 * s%opacity(k) * s%Cp(k) * pow2(s%rho(k)))
             if (s%T(k) > 1.1d5) then
@@ -938,6 +940,7 @@
             nu = nu + 4d0 * crad * pow4(s%T(k)) / (15d0 * clight * s%opacity(k) * pow2(s%rho(k)))
 
             dr = s%dm(k) / (4d0 * pi * pow2(s%rmid(k)) * s%rho(k))
+            
             alpha_avg = alpha_avg + dr * alpha
             nu_avg = nu_avg + dr * nu
             gradr_sub_grada_avg = gradr_sub_grada_avg + dr * (s%gradr(k) - s%grada(k))
@@ -947,6 +950,8 @@
          nu_avg = nu_avg / dz
          gradr_sub_grada_avg = gradr_sub_grada_avg / dz
          g_avg = g_avg / dz
+
+         write(*,*) dz, g_avg, gradr_sub_grada_avg, nu_avg, alpha_avg
 
          Pr = nu_avg / alpha_avg
          Re = v * dz / nu_avg
