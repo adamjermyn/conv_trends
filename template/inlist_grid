@@ -1,0 +1,22 @@
+
+&star_job
+
+
+/ ! end of star_job namelist
+
+&controls
+
+ 
+      ! MAIN PARAMS
+
+      initial_mass = MMM
+      Teff_lower_limit = 5600 
+               
+/ ! end of controls namelist
+
+
+&pgstar
+         
+
+
+/ ! end of pgstar namelist

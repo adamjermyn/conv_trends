@@ -1,0 +1,85 @@
+
+
+&star_job
+
+      !create_pre_main_sequence_model = .true.
+
+      !change_lnPgas_flag = .true.
+      !new_lnPgas_flag = .true.
+
+      history_columns_file ='history_columns.list'
+      profile_columns_file ='profile_columns.list'
+
+     ! save_model_when_terminate = .true.
+     ! save_model_filename = 'tams.mod'
+
+      pgstar_flag = .true.
+
+
+/ ! end of star_job namelist
+
+&eos
+  ! eos options
+  ! see eos/defaults/eos.defaults
+
+/ ! end of eos namelist
+
+
+&kap
+  ! kap options
+  ! see kap/defaults/kap.defaults
+  use_Type2_opacities = .true.
+  Zbase = 0.02
+
+/ ! end of kap namelist
+
+&controls
+
+
+      ! MAIN PARAMS
+      mixing_length_alpha = 1.6
+      initial_z = 0.02
+      do_conv_premix = .true.
+      use_Ledoux_criterion = .true.
+
+      ! OUTPUT
+      !photostep = 1000
+      profile_interval = 10
+      history_interval = 1
+      !terminal_cnt = 10
+      !write_header_frequency = 10
+
+      ! WHEN TO STOP
+      ! max_age = 2d10
+       xa_central_lower_limit_species(1) = 'h1'
+       xa_central_lower_limit(1) = 0.01
+       Teff_lower_limit = 5600
+
+      ! RESOLUTION
+      mesh_delta_coeff = 0.5
+      time_delta_coeff = 1.0
+
+      ! GOLD TOLERANCES
+      use_gold_tolerances = .true.
+      use_gold2_tolerances = .true.
+      delta_lg_XH_cntr_limit = 0.01
+      varcontrol_target = 1d-4
+      min_timestep_limit = 1d-1
+
+     !better resolution of the Henyey hook
+     delta_lg_XH_cntr_max = -2
+     !limit on magnitude of relative change at any grid point
+     delta_lgTeff_limit = 0.005
+     delta_lgTeff_hard_limit = 0.005
+     delta_lgL_limit = 0.005
+
+
+
+/ ! end of controls namelist
+
+
+&pgstar
+
+
+
+/ ! end of pgstar namelist
