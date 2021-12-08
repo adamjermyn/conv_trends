@@ -2,9 +2,8 @@
 
 &star_job
 
-      create_pre_main_sequence_model = .false.
+      create_pre_main_sequence_model = .true.
       pgstar_flag = .false.
-
 
 / ! end of star_job namelist
 
