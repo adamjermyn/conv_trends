@@ -21,7 +21,7 @@ do
     rm -r runs/$j
     cp -R template runs/$j    
     cd runs/$j
-    sed -i .bak "s/MMM/$j/" inlist_project   
+    sed -i "s/MMM/$j/" inlist_project
     echo "Running Model..." $j
     ./rn > rn.out &
     cd ../../
