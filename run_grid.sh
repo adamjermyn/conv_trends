@@ -26,3 +26,5 @@ do
     ./rn > rn.out &
     cd ../../
 done
+
+wait
