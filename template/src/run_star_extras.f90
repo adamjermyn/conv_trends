@@ -951,11 +951,8 @@
          gradr_sub_grada_avg = gradr_sub_grada_avg / dz
          g_avg = g_avg / dz
 
-         write(*,*) dz, g_avg, gradr_sub_grada_avg, nu_avg, alpha_avg
-
          Pr = nu_avg / alpha_avg
          Re = v * dz / nu_avg
-         Ra = Pr * pow2(Re)
          Ra = pow3(dz) * g_avg * gradr_sub_grada_avg / (nu_avg * alpha_avg)
 
       end subroutine compute_Ra_Re
