@@ -2,18 +2,8 @@
 
 &star_job
 
-      !create_pre_main_sequence_model = .true.
-
-      !change_lnPgas_flag = .true.
-      !new_lnPgas_flag = .true.
-
-      history_columns_file ='history_columns.list'
-      profile_columns_file ='profile_columns.list'
-
-     ! save_model_when_terminate = .true.
-     ! save_model_filename = 'tams.mod'
-
-      pgstar_flag = .true.
+      create_pre_main_sequence_model = .true.
+      pgstar_flag = .false.
 
 
 / ! end of star_job namelist
