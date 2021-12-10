@@ -158,7 +158,7 @@
            ierr = 0
            call star_ptr(id, s, ierr)
            if (ierr /= 0) return
-           how_many_extra_history_columns = 119
+           how_many_extra_history_columns = 131
         end function how_many_extra_history_columns
 
 
@@ -203,7 +203,7 @@
            integer ::  i, j, k, m, num_conv_regions, sc1_top, sc2_top, sc3_top, sc4_top
            integer ::  sc1_bottom, sc2_bottom, sc3_bottom, sc4_bottom, col_count, sc_convective_core
            integer ::  hp_1, hp_2, hp_3, hp_4, hp_5, hp_6, hp_7
-           integer ::  hp_8, hp_10, hp_15, hp_20, hp_30, hp_50, hp_100
+           integer ::  hp_8, hp_10, hp_15, hp_20, hp_30, hp_50, hp_100, HI_nu, HI_alpha, HI_dz, HeI_nu, HeI_alpha, HeI_dz, HeII_nu, HeII_alpha, HeII_dz, FeCZ_nu, FeCZ_alpha, FeCZ_dz
            character (len=100) :: col_name
            character (len=10) :: str
            character (len=7) ::  sc1_type
@@ -321,15 +321,27 @@
           HI_Ra = 0d0
           HI_Re = 0d0
           HI_Pr = 0d0
+          HI_nu = 0d0
+          HI_alpha = 0d0
+          HI_dz = 0d0
           HeI_Ra = 0d0
           HeI_Re = 0d0
           HeI_Pr = 0d0
+          HeI_nu = 0d0
+          HeI_alpha = 0d0
+          HeI_dz = 0d0
           HeII_Ra = 0d0
           HeII_Re = 0d0
           HeII_Pr = 0d0
+          HeII_nu = 0d0
+          HeII_alpha = 0d0
+          HeII_dz = 0d0
           FeCZ_Ra = 0d0
           FeCZ_Re = 0d0
           FeCZ_Pr = 0d0
+          FeCZ_nu = 0d0
+          FeCZ_alpha = 0d0
+          FeCZ_dz = 0d0
 
            mixing_length_alpha = s% mixing_length_alpha
 
@@ -394,7 +406,7 @@
                   call get_max_fc(id, ierr, HI_fcmax, sc_top(k), sc_bottom(k))
                   call get_pressure_eq_field(id, ierr, sc_top(k), sc_bottom (k),HI_b_p_eq,HI_b_p_max)
                   call get_B_shutoff_conv_region_above_T(id, ierr, sc_top(k), sc_bottom (k), HI_B_shutoff_conv)
-                  call compute_Ra_Re(id, ierr, sc_top(k), sc_bottom(k), v_HI_aver, HI_Ra, HI_Re, HI_Pr)
+                  call compute_Ra_Re(id, ierr, sc_top(k), sc_bottom(k), v_HI_aver, HI_Ra, HI_Re, HI_Pr, HI_nu, HI_alpha, HI_dz)
                   HI_tau_eta = compute_B_diffusion_time(s,  sc_top(k))
                   HI_buoyant_time = compute_buoyant_time(s,  sc_top(k), b_HI_aver)
                   HI_xm = sum(s%dm(1:sc_top(k))) / Msun
@@ -413,7 +425,7 @@
                   call get_max_fc(id, ierr, HeI_fcmax, sc_top(k), sc_bottom(k))
                   call get_pressure_eq_field(id, ierr, sc_top(k), sc_bottom (k),HeI_b_p_eq,HeI_b_p_max)
                   call get_B_shutoff_conv_region_above_T(id, ierr, sc_top(k), sc_bottom (k), HeI_B_shutoff_conv)
-                  call compute_Ra_Re(id, ierr, sc_top(k), sc_bottom(k), v_HeI_aver, HeI_Ra, HeI_Re, HeI_Pr)
+                  call compute_Ra_Re(id, ierr, sc_top(k), sc_bottom(k), v_HeI_aver, HeI_Ra, HeI_Re, HeI_Pr, HeI_nu, HeI_alpha, HeI_dz)
                   HeI_tau_eta = compute_B_diffusion_time(s,  sc_top(k))
                   HeI_buoyant_time = compute_buoyant_time(s,  sc_top(k), b_HeI_aver)
                   HeI_xm = sum(s%dm(1:sc_top(k))) / Msun
@@ -432,7 +444,7 @@
                   call get_max_fc(id, ierr, HeII_fcmax, sc_top(k), sc_bottom(k))
                   call get_pressure_eq_field(id, ierr, sc_top(k), sc_bottom (k),HeII_b_p_eq,HeII_b_p_max)
                   call get_B_shutoff_conv_region_above_T(id, ierr, sc_top(k), sc_bottom (k), HeII_B_shutoff_conv)
-                  call compute_Ra_Re(id, ierr, sc_top(k), sc_bottom(k), v_HeII_aver, HeII_Ra, HeII_Re, HeII_Pr)
+                  call compute_Ra_Re(id, ierr, sc_top(k), sc_bottom(k), v_HeII_aver, HeII_Ra, HeII_Re, HeII_Pr, HeII_nu, HeII_alpha, HeII_dz)
                   HeII_tau_eta = compute_B_diffusion_time(s,  sc_top(k))
                   HeII_buoyant_time = compute_buoyant_time(s,  sc_top(k), b_HeII_aver)
                   HeII_xm = sum(s%dm(1:sc_top(k))) / Msun
@@ -451,7 +463,7 @@
                   call get_max_fc(id, ierr, FeCZ_fcmax, sc_top(k), sc_bottom(k))
                   call get_pressure_eq_field(id, ierr, sc_top(k), sc_bottom (k),FeCZ_b_p_eq,FeCZ_b_p_max)
                   call get_B_shutoff_conv_region_above_T(id, ierr, sc_top(k), sc_bottom (k), FeCZ_B_shutoff_conv)
-                  call compute_Ra_Re(id, ierr, sc_top(k), sc_bottom(k), v_FeCZ_aver, FeCZ_Ra, FeCZ_Re, FeCZ_Pr)
+                  call compute_Ra_Re(id, ierr, sc_top(k), sc_bottom(k), v_FeCZ_aver, FeCZ_Ra, FeCZ_Re, FeCZ_Pr, FeCZ_nu, FeCZ_alpha, FeCZ_dz)
                   FeCZ_tau_eta = compute_B_diffusion_time(s,  sc_top(k))
                   FeCZ_buoyant_time = compute_buoyant_time(s,  sc_top(k), b_FeCZ_aver)
                   FeCZ_xm = sum(s%dm(1:sc_top(k))) / Msun
@@ -759,6 +771,31 @@
            vals(118) = FeCZ_Re
            vals(119) = FeCZ_Pr
 
+           names(120) = 'HI_nu'
+           names(121) = 'HI_alpha'
+           names(122) = 'HI_dz'
+           names(123) = 'HeI_nu'
+           names(124) = 'HeI_alpha'
+           names(125) = 'HeI_dz'
+           names(126) = 'HeII_nu'
+           names(127) = 'HeII_alpha'
+           names(128) = 'HeII_dz'
+           names(129) = 'FeCZ_nu'
+           names(130) = 'FeCz_alpha'
+           names(131) = 'FeCZ_dz'
+           vals(120) = HI_nu
+           vals(121) = HI_alpha
+           vals(122) = HI_dz
+           vals(123) = HeI_nu
+           vals(124) = HeI_alpha
+           vals(125) = HeI_dz
+           vals(126) = HeII_nu
+           vals(127) = HeII_alpha
+           vals(128) = HeII_dz
+           vals(129) = FeCZ_nu
+           vals(130) = FeCZ_alpha
+           vals(131) = FeCZ_dz
+
         end subroutine data_for_extra_history_columns
 
 
@@ -903,20 +940,18 @@
            sc_convective_core = k
       end subroutine get_convective_core
 
-      subroutine compute_Ra_Re(id, ierr, sc_top, sc_bottom, v, Ra, Re, Pr)
+      subroutine compute_Ra_Re(id, ierr, sc_top, sc_bottom, v, Ra, Re, Pr, nu_avg, alpha_avg, dz)
          use const_def
 
          type (star_info), pointer :: s
          integer, intent(in) :: id, sc_top, sc_bottom
          real(dp), intent(in) :: v
          integer, intent(out) :: ierr
-         real(dp), intent(out) :: Ra, Re, Pr
+         real(dp), intent(out) :: Ra, Re, Pr, alpha_avg, nu_avg, dz
 
          integer :: k
-         real(dp) :: alpha_avg
-         real(dp) :: nu_avg
          real(dp) :: alpha, lnLambda, nu
-         real(dp) :: dz, dr
+         real(dp) :: dr
          real(dp) :: gradr_sub_grada_avg, g_avg
 
          ierr = 0
