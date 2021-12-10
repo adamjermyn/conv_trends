@@ -203,7 +203,8 @@
            integer ::  i, j, k, m, num_conv_regions, sc1_top, sc2_top, sc3_top, sc4_top
            integer ::  sc1_bottom, sc2_bottom, sc3_bottom, sc4_bottom, col_count, sc_convective_core
            integer ::  hp_1, hp_2, hp_3, hp_4, hp_5, hp_6, hp_7
-           integer ::  hp_8, hp_10, hp_15, hp_20, hp_30, hp_50, hp_100, HI_nu, HI_alpha, HI_dz, HeI_nu, HeI_alpha, HeI_dz, HeII_nu, HeII_alpha, HeII_dz, FeCZ_nu, FeCZ_alpha, FeCZ_dz
+           integer ::  hp_8, hp_10, hp_15, hp_20, hp_30, hp_50, hp_100
+           real(dp) :: HI_nu, HI_alpha, HI_dz, HeI_nu, HeI_alpha, HeI_dz, HeII_nu, HeII_alpha, HeII_dz, FeCZ_nu, FeCZ_alpha, FeCZ_dz
            character (len=100) :: col_name
            character (len=10) :: str
            character (len=7) ::  sc1_type
