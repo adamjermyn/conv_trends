@@ -1033,10 +1033,10 @@
          gradr_sub_grada_avg = 0d0
          do k=sc_top,sc_bottom
             alpha = 16d0 * boltz_sigma * pow3(s%T(k)) / (3d0 * s%opacity(k) * s%Cp(k) * pow2(s%rho(k)))
-            if (s%T(k) > 1.1d5) then
-               lnLambda = -17.4d0 + 1.5d0 * log(s%T(k)) - 0.5d0 * log(s%rho(k))
+            if (s%T(k) > 4.2d5) then
+               lnLambda = -17.9d0 + 1.5d0 * log(s%T(k)) - 0.5d0 * log(s%rho(k))
             else
-               lnLambda = -12.7d0 + log(s%T(k)) - 0.5d0 * log(s%rho(k))
+               lnLambda = -11.5d0 + log(s%T(k)) - 0.5d0 * log(s%rho(k))
             end if
             nu = 2.21d-15 * pow(s%T(k),2.5d0) / s%rho(k) / lnLambda
             nu = nu + 4d0 * crad * pow4(s%T(k)) / (15d0 * clight * s%opacity(k) * pow2(s%rho(k)))
