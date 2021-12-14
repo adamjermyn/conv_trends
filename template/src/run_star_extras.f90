@@ -972,7 +972,7 @@
             else
                lnLambda = -12.7d0 + log(s%T(k)) - 0.5d0 * log(s%rho(k))
             end if
-            nu = 5.2d-15 * pow(s%T(k),2.5d0) / s%rho(k) / lnLambda
+            nu = 2.21d-15 * pow(s%T(k),2.5d0) / s%rho(k) / lnLambda
             nu = nu + 4d0 * crad * pow4(s%T(k)) / (15d0 * clight * s%opacity(k) * pow2(s%rho(k)))
 
             dr = s%dm(k) / (4d0 * pi * pow2(s%rmid(k)) * s%rho(k))
