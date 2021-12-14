@@ -976,7 +976,7 @@
       !! @param kap_cond The electronic thermal opacity (cm^2/g).
       !! @param opacity The opacity (cm^2/g).
       !! @param sig The electrical conductivity (output, 1/s).
-      real(dp) function calc_sige(abar, zbar, rho, T, Cp) result(sig)
+      real(dp) function calc_sige(abar, zbar, rho, T) result(sig)
          real(dp), intent(in) :: abar, zbar, rho, T
          real(dp) :: gamma
 
