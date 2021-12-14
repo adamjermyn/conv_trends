@@ -158,7 +158,7 @@
            ierr = 0
            call star_ptr(id, s, ierr)
            if (ierr /= 0) return
-           how_many_extra_history_columns = 131
+           how_many_extra_history_columns = 135
         end function how_many_extra_history_columns
 
 
@@ -205,6 +205,7 @@
            integer ::  hp_1, hp_2, hp_3, hp_4, hp_5, hp_6, hp_7
            integer ::  hp_8, hp_10, hp_15, hp_20, hp_30, hp_50, hp_100
            real(dp) :: HI_nu, HI_alpha, HI_dz, HeI_nu, HeI_alpha, HeI_dz, HeII_nu, HeII_alpha, HeII_dz, FeCZ_nu, FeCZ_alpha, FeCZ_dz
+           real(dp) :: HI_eta, HeI_eta, HeII_eta, FeCZ_eta
            character (len=100) :: col_name
            character (len=10) :: str
            character (len=7) ::  sc1_type
@@ -323,24 +324,28 @@
           HI_Re = 0d0
           HI_Pr = 0d0
           HI_nu = 0d0
+          HI_eta = 0d0
           HI_alpha = 0d0
           HI_dz = 0d0
           HeI_Ra = 0d0
           HeI_Re = 0d0
           HeI_Pr = 0d0
           HeI_nu = 0d0
+          HeI_eta = 0d0
           HeI_alpha = 0d0
           HeI_dz = 0d0
           HeII_Ra = 0d0
           HeII_Re = 0d0
           HeII_Pr = 0d0
           HeII_nu = 0d0
+          HeII_eta = 0d0
           HeII_alpha = 0d0
           HeII_dz = 0d0
           FeCZ_Ra = 0d0
           FeCZ_Re = 0d0
           FeCZ_Pr = 0d0
           FeCZ_nu = 0d0
+          FeCZ_eta = 0d0
           FeCZ_alpha = 0d0
           FeCZ_dz = 0d0
 
@@ -407,7 +412,7 @@
                   call get_max_fc(id, ierr, HI_fcmax, sc_top(k), sc_bottom(k))
                   call get_pressure_eq_field(id, ierr, sc_top(k), sc_bottom (k),HI_b_p_eq,HI_b_p_max)
                   call get_B_shutoff_conv_region_above_T(id, ierr, sc_top(k), sc_bottom (k), HI_B_shutoff_conv)
-                  call compute_Ra_Re(id, ierr, sc_top(k), sc_bottom(k), v_HI_aver, HI_Ra, HI_Re, HI_Pr, HI_nu, HI_alpha, HI_dz)
+                  call compute_Ra_Re(id, ierr, sc_top(k), sc_bottom(k), v_HI_aver, HI_Ra, HI_Re, HI_Pr, HI_nu, HI_alpha, HI_eta, HI_dz)
                   HI_tau_eta = compute_B_diffusion_time(s,  sc_top(k))
                   HI_buoyant_time = compute_buoyant_time(s,  sc_top(k), b_HI_aver)
                   HI_xm = sum(s%dm(1:sc_top(k))) / Msun
@@ -426,7 +431,7 @@
                   call get_max_fc(id, ierr, HeI_fcmax, sc_top(k), sc_bottom(k))
                   call get_pressure_eq_field(id, ierr, sc_top(k), sc_bottom (k),HeI_b_p_eq,HeI_b_p_max)
                   call get_B_shutoff_conv_region_above_T(id, ierr, sc_top(k), sc_bottom (k), HeI_B_shutoff_conv)
-                  call compute_Ra_Re(id, ierr, sc_top(k), sc_bottom(k), v_HeI_aver, HeI_Ra, HeI_Re, HeI_Pr, HeI_nu, HeI_alpha, HeI_dz)
+                  call compute_Ra_Re(id, ierr, sc_top(k), sc_bottom(k), v_HeI_aver, HeI_Ra, HeI_Re, HeI_Pr, HeI_nu, HeI_alpha, HeI_eta, HeI_dz)
                   HeI_tau_eta = compute_B_diffusion_time(s,  sc_top(k))
                   HeI_buoyant_time = compute_buoyant_time(s,  sc_top(k), b_HeI_aver)
                   HeI_xm = sum(s%dm(1:sc_top(k))) / Msun
@@ -445,7 +450,7 @@
                   call get_max_fc(id, ierr, HeII_fcmax, sc_top(k), sc_bottom(k))
                   call get_pressure_eq_field(id, ierr, sc_top(k), sc_bottom (k),HeII_b_p_eq,HeII_b_p_max)
                   call get_B_shutoff_conv_region_above_T(id, ierr, sc_top(k), sc_bottom (k), HeII_B_shutoff_conv)
-                  call compute_Ra_Re(id, ierr, sc_top(k), sc_bottom(k), v_HeII_aver, HeII_Ra, HeII_Re, HeII_Pr, HeII_nu, HeII_alpha, HeII_dz)
+                  call compute_Ra_Re(id, ierr, sc_top(k), sc_bottom(k), v_HeII_aver, HeII_Ra, HeII_Re, HeII_Pr, HeII_nu, HeII_alpha, HeII_eta, HeII_dz)
                   HeII_tau_eta = compute_B_diffusion_time(s,  sc_top(k))
                   HeII_buoyant_time = compute_buoyant_time(s,  sc_top(k), b_HeII_aver)
                   HeII_xm = sum(s%dm(1:sc_top(k))) / Msun
@@ -464,7 +469,7 @@
                   call get_max_fc(id, ierr, FeCZ_fcmax, sc_top(k), sc_bottom(k))
                   call get_pressure_eq_field(id, ierr, sc_top(k), sc_bottom (k),FeCZ_b_p_eq,FeCZ_b_p_max)
                   call get_B_shutoff_conv_region_above_T(id, ierr, sc_top(k), sc_bottom (k), FeCZ_B_shutoff_conv)
-                  call compute_Ra_Re(id, ierr, sc_top(k), sc_bottom(k), v_FeCZ_aver, FeCZ_Ra, FeCZ_Re, FeCZ_Pr, FeCZ_nu, FeCZ_alpha, FeCZ_dz)
+                  call compute_Ra_Re(id, ierr, sc_top(k), sc_bottom(k), v_FeCZ_aver, FeCZ_Ra, FeCZ_Re, FeCZ_Pr, FeCZ_nu, FeCZ_alpha, FeCZ_eta, FeCZ_dz)
                   FeCZ_tau_eta = compute_B_diffusion_time(s,  sc_top(k))
                   FeCZ_buoyant_time = compute_buoyant_time(s,  sc_top(k), b_FeCZ_aver)
                   FeCZ_xm = sum(s%dm(1:sc_top(k))) / Msun
@@ -797,6 +802,15 @@
            vals(130) = FeCZ_alpha
            vals(131) = FeCZ_dz
 
+           names(132) = 'HI_eta'
+           names(133) = 'HeI_eta'
+           names(134) = 'HeII_eta'
+           names(135) = 'FeCZ_eta'
+           vals(132) = HI_eta
+           vals(133) = HeI_eta
+           vals(134) = HeII_eta
+           vals(135) = FeCZ_eta
+
         end subroutine data_for_extra_history_columns
 
 
@@ -941,19 +955,70 @@
            sc_convective_core = k
       end subroutine get_convective_core
 
-      subroutine compute_Ra_Re(id, ierr, sc_top, sc_bottom, v, Ra, Re, Pr, nu_avg, alpha_avg, dz)
+
+      !> Compute the magnetic diffusivity from the electric conductivity.
+      !! @param sig The electrical conductivity (1/s).
+      !! @param eta The magnetic diffusivity (output, cm^2/s).
+      real(dp) function calc_eta(sig) result(eta)
+         real(dp), intent(in) :: sig
+
+         eta = (clight * clight / (4d0 * pi)) /sig
+      end function calc_eta
+
+      !> Computes the electrical conductivity following
+      !! S.-C. YOON Oct. 10, 2003.
+      !!
+      !! @param abar The mean atomic mass number.
+      !! @param zbar The mean atomic charge.
+      !! @param rho The density (g/cm^3).
+      !! @param T The temperature (K).
+      !! @param Cp The specific heat at constant pressure (erg/g/K).
+      !! @param kap_cond The electronic thermal opacity (cm^2/g).
+      !! @param opacity The opacity (cm^2/g).
+      !! @param sig The electrical conductivity (output, 1/s).
+      real(dp) function calc_sige(abar, zbar, rho, T, Cp) result(sig)
+         real(dp), intent(in) :: abar, zbar, rho, T
+         real(dp) :: gamma
+
+         gamma = 0.2275d0*pow2(zbar) * pow(rho * 1.d-6 / abar, one_third)*1.d8/T
+         sig = sige1(zbar,T,gamma)
+      end function calc_sige
+
+      !> Computes one regime of the electrical conductivity.
+      !! Written by S.-C. Yoon, Oct. 10, 2003
+      !! See also Spitzer 1962 and Wendell et al. 1987, ApJ 313:284
+      !! @param Z species charge
+      !! @param T Temperature (K)
+      !! @param xgamma The ion coupling strength (dimensionless).
+      !! @param sige1 The electrical conductivity (1/s).
+      real(dp) function sige1(z,t,xgamma)
+         real(dp), intent(in) :: z, t, xgamma
+         real(dp) :: etan, xlambda,f
+         if (t >= 4.2d5) then
+            f = sqrt(4.2d5/t)
+         else
+            f = 1.d0
+         end if
+         xlambda = sqrt(3d0*z*z*z)*pow(xgamma,-1.5d0)*f + 1d0
+         etan = 3.d11*z*log(xlambda)*pow(t,-1.5d0)             ! magnetic diffusivity
+         etan = etan/(1.d0-1.20487d0*exp(-1.0576d0*pow(z,0.347044d0))) ! correction: gammae
+         sige1 = clight*clight/(pi4*etan)                    ! sigma = c^2/(4pi*eta)
+      end function sige1
+
+
+      subroutine compute_Ra_Re(id, ierr, sc_top, sc_bottom, v, Ra, Re, Pr, nu_avg, alpha_avg, eta_avg, dz)
          use const_def
 
          type (star_info), pointer :: s
          integer, intent(in) :: id, sc_top, sc_bottom
          real(dp), intent(in) :: v
          integer, intent(out) :: ierr
-         real(dp), intent(out) :: Ra, Re, Pr, alpha_avg, nu_avg, dz
+         real(dp), intent(out) :: Ra, Re, Pr, alpha_avg, nu_avg, eta_avg, dz
 
          integer :: k
          real(dp) :: alpha, lnLambda, nu
          real(dp) :: dr
-         real(dp) :: gradr_sub_grada_avg, g_avg
+         real(dp) :: gradr_sub_grada_avg, g_avg, eta, sig
 
          ierr = 0
          call star_ptr(id, s, ierr)
@@ -963,6 +1028,7 @@
 
          alpha_avg = 0d0
          nu_avg = 0d0
+         eta_avg = 0d0
          g_avg = 0d0
          gradr_sub_grada_avg = 0d0
          do k=sc_top,sc_bottom
@@ -975,17 +1041,22 @@
             nu = 2.21d-15 * pow(s%T(k),2.5d0) / s%rho(k) / lnLambda
             nu = nu + 4d0 * crad * pow4(s%T(k)) / (15d0 * clight * s%opacity(k) * pow2(s%rho(k)))
 
+            sig = calc_sige(s%abar(k),s%zbar(k),s%rho(k),s%T(k))
+            eta = calc_eta(sig)
+
             dr = s%dm(k) / (4d0 * pi * pow2(s%rmid(k)) * s%rho(k))
 
             alpha_avg = alpha_avg + dr * alpha
             nu_avg = nu_avg + dr * nu
             gradr_sub_grada_avg = gradr_sub_grada_avg + dr * max(0d0,s%gradr(k) - s%grada(k))
             g_avg = g_avg + dr * s%grav(k)
+            eta_avg = eta_avg + dz * eta
          end do
          alpha_avg = alpha_avg / dz
          nu_avg = nu_avg / dz
          gradr_sub_grada_avg = gradr_sub_grada_avg / dz
          g_avg = g_avg / dz
+         eta_avg = eta_avg / dz
 
          Pr = nu_avg / alpha_avg
          Re = v * dz / nu_avg
