@@ -286,6 +286,14 @@
                call max_val(s, sc_top(k), sc_bottom(k), conv_vel, outputs(i,k))
 
                i = i+1
+               Q_names(i) = 'stiffness_bottom'
+               call stiffness_bottom(s, sc_top(k), sc_bottom(k), outputs(i,k))
+
+               i = i+1
+               Q_names(i) = 'stiffness_top'
+               call stiffness_top(s, sc_top(k), sc_bottom(k), outputs(i,k))
+
+               i = i+1
                Q_names(i) = 'cz_dm'
                call integrate_dm(s, sc_top(k), sc_bottom(k), unity, outputs(i,k))
 
