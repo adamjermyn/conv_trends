@@ -8,6 +8,52 @@ use math_lib
 implicit none
 contains
 
+    real(dp) function compute_B_diffusion_time(s, k_hi) result(tau)
+       type (star_info), pointer :: s
+       integer, intent(in) :: k_hi 
+       
+       integer :: k
+       real(dp) :: eta, ne, lambdaD, dr, D
+
+       tau = 0d0
+       do k=1,k_hi
+         ne = exp(s%lnfree_e(k)) * avo * (s%rho(k) / s%abar(k))
+         lambdaD = sqrt(kerg * s%T(k) / (4d0 * pi * pow2(qe) * (s%Z2bar(k))))
+
+         ! Spitzer resistivity per https://en.wikipedia.org/wiki/Spitzer_resistivity
+         eta = 4d0 * sqrt(2d0 * pi) / 3d0
+         eta = eta * s%zbar(k) * pow2(qe) * sqrt(me) / pow(kerg * s%T(k), 1.5d0) ! Transverse Spitzer resistivity
+         eta = eta * log(4d0 * pi * pow3(lambdaD) * ne / 3d0)
+
+         ! eta is currently a resistivity, with CGS units of erg*cm / (erg^(3/2) / g^(1/2)) = erg*cm/(erg*cm/s) = s
+         ! But we want a diffusivity. The MHD diffusivity is
+         D = eta * pow2(clight) / (4d0 * pi) ! This has units cm^2/s.
+
+         ! Integrate d(r^2)/D through the RZ.
+         dr = s%dm(k) / (4d0 * pi * pow2(s%r(k)) * s%rho(k))
+
+         tau = tau + 2d0 * dr * s%r(k) / D
+       end do
+
+    end function compute_B_diffusion_time
+
+    subroutine B_equipartition_conv(s, k, B)
+        type (star_info), pointer :: s
+        integer, intent(in) :: id
+        real(dp), intent(out) :: B
+
+        B = (s%conv_vel(k)/sqrt(4d0 * pi * s%rho(k))
+
+    end subroutine B_equipartition_conv
+
+    subroutine B_equipartition_pressure(s, k, B)
+        type (star_info), pointer :: s
+        integer, intent(in) :: id
+        real(dp), intent(out) :: B
+
+        B = sqrt(8d0*pi*s%p(k))
+
+    end subroutine B_equipartition_pressure
 
     subroutine get_B_shutoff_conv(s, k, B)
         use const_def
@@ -16,7 +62,6 @@ contains
 
         type (star_info), pointer :: s
         integer, intent(in) :: id
-        integer, intent(out) :: ierr
         real(dp), intent(out) :: B
 
         integer :: n, k, sc_top, sc_bottom
