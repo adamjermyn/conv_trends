@@ -68,12 +68,12 @@ contains
 
            sc_type = 'UNKNOWN'
            if ( sc_top > 0 ) then
-             if (s% T(sc_top) < T_HI(2)) then
-               sc_type = 'HI'
-             else if (s%m(sc_bottom)/s%m(1) < 3d-2 .or. sc_bottom > s%nz - 3) then
+             if (s%m(sc_bottom)/s%m(1) < 3d-2 .or. sc_bottom > s%nz - 3) then
                sc_type = 'Core'
              else if (s%T(sc_bottom) > T_FeCZ(2)) then ! It's not a core, but it's also not one of the four subsurface zones
                sc_type = 'Envelope'
+             else if (s% T(sc_top) < T_HI(2)) then
+               sc_type = 'HI'
              else
                do k = sc_top, sc_bottom
                   if  (s% T(k) > T_HeI(1) .AND. s% T(k) < T_HeI(2)) then
