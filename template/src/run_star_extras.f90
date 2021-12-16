@@ -158,7 +158,7 @@
            ierr = 0
            call star_ptr(id, s, ierr)
            if (ierr /= 0) return
-           how_many_extra_history_columns = 159
+           how_many_extra_history_columns = 195
         end function how_many_extra_history_columns
 
 
@@ -184,7 +184,7 @@
            character(len=100) :: name
 
            ! Quantities that are one per CZ
-           integer, parameter :: nQs = 26
+           integer, parameter :: nQs = 32
            integer, parameter :: nZs = 6 ! Max # of CZs
            integer :: nFound
            logical :: sc_exists(nZs)
@@ -262,8 +262,16 @@
                outputs(i,k) = s%scale_height(sc_bottom(k))
 
                i = i+1
+               Q_names(i) = 'Prad_div_P'
+               call r_average(s, sc_top(k), sc_bottom(k), Prad_div_P, outputs(i,k))
+
+               i = i+1
                Q_names(i) = 'density'
                call r_average(s, sc_top(k), sc_bottom(k), density, outputs(i,k))
+
+               i = i+1
+               Q_names(i) = 'density_ratio'
+               outputs(i,k) = s%rho(sc_bottom(k))/s%rho(sc_top(k))
 
                i = i+1
                Q_names(i) = 'sound_speed'
@@ -280,6 +288,14 @@
                i = i+1
                Q_names(i) = 'conv_vel'
                call r_average(s, sc_top(k), sc_bottom(k), conv_vel, outputs(i,k))
+
+               i = i+1
+               Q_names(i) = 'conv_vel_div_r'
+               call r_average(s, sc_top(k), sc_bottom(k), conv_vel_div_r, outputs(i,k))
+
+               i = i+1
+               Q_names(i) = 'L_conv_div_L'
+               call r_average(s, sc_top(k), sc_bottom(k), L_conv_div_L, outputs(i,k))
 
                i = i+1
                Q_names(i) = 'conv_vel_max'

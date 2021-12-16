@@ -22,6 +22,13 @@ contains
         rho = s%rho(k)       
     end subroutine density
 
+    subroutine Prad_div_P(s,k,beta)
+        type (star_info), pointer :: s
+        integer, intent(in) :: k
+        real(dp), intent(out) :: beta
+        beta = s%Prad(k)/s%P(k)       
+    end subroutine Prad_div_P
+
     subroutine dtau_dr(s,k,dtdr)
         type (star_info), pointer :: s
         integer, intent(in) :: k
@@ -38,11 +45,29 @@ contains
         v = s%conv_vel(k)
     end subroutine conv_vel
 
+    subroutine conv_vel_div_r(s,k,v)
+        type (star_info), pointer :: s
+        integer, intent(in) :: k
+        real(dp), intent(out) :: v
+
+        v = s%conv_vel(k)/s%r(k)
+    end subroutine conv_vel_div_r
+
+    subroutine L_conv_div_L(s,k,val)
+        type (star_info), pointer :: s
+        integer, intent(in) :: k
+        real(dp), intent(out) :: val
+
+        val = s%L_conv(k) / s%L(k)
+    end subroutine L_conv_div_L
+
+
     subroutine stiffness_top(s,k_top,k_bottom,val)
         type (star_info), pointer :: s
         integer, intent(in) :: k_top, k_bottom
         real(dp), intent(out) :: val
         real(dp) :: brunt2_CZ, brunt2_RZ, dz, dr, vc
+        integer :: k
 
         if (k_top == 1) then
             val = 0d0
@@ -67,7 +92,7 @@ contains
             dr = s%dm(k) / (4d0 * pi * pow2(s%r(k)) * s%rho(k))
             dz = dz + dr
             if (dz > 0.2d0*s%scale_height(k_top)) then
-                brunt2_RZ = s%bruntN2(k)
+                brunt2_RZ = s%brunt_N2(k)
                 exit
             end if
         end do
@@ -81,6 +106,7 @@ contains
         integer, intent(in) :: k_top, k_bottom
         real(dp), intent(out) :: val
         real(dp) :: brunt2_CZ, brunt2_RZ, dz, dr, vc
+        integer :: k
 
         if (k_bottom == s%nz) then
             val = 0d0
@@ -105,7 +131,7 @@ contains
             dr = s%dm(k) / (4d0 * pi * pow2(s%r(k)) * s%rho(k))
             dz = dz + dr
             if (dz > 0.2d0*s%scale_height(k_top) .or. k == s%nz-1) then
-                brunt2_RZ = s%bruntN2(k)
+                brunt2_RZ = s%brunt_N2(k)
                 exit
             end if
         end do
