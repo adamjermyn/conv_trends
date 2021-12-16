@@ -44,10 +44,18 @@ contains
     !! @param rho The density (g/cm^3).
     !! @param T The temperature (K).
     !! @param eta The magnetic diffusivity (cm^2/s)
-    real(dp) function magnetic_diffusivity(abar, zbar, rho, T) result(eta)
-        real(dp), intent(in) :: abar, zbar, rho, T
-        real(dp) :: gamma
-        real(dp) :: eta, xlambda,f
+    subroutine magnetic_diffusivity(s, k, eta)
+        type (star_info), pointer :: s
+        integer, intent(in) :: k
+        real(dp), intent(out) :: eta
+
+        real(dp) :: abar, zbar, rho, T
+        real(dp) :: gamma, xlambda, f
+
+        abar = s%abar(k)
+        zbar = s%zbar(k)
+        rho = s%rho(k)
+        T = s%T(k)
 
         gamma = 0.2275d0*pow2(zbar) * pow(rho * 1.d-6 / abar, one_third)*1.d8/T
 
@@ -56,10 +64,10 @@ contains
         else
             f = 1.d0
         end if
-        xlambda = sqrt(3d0*z*z*z)*pow(gamma,-1.5d0)*f + 1d0
-        eta = 3.d11*z*log(xlambda)*pow(t,-1.5d0)             ! magnetic diffusivity
-        eta = eta/(1.d0-1.20487d0*exp(-1.0576d0*pow(z,0.347044d0))) ! correction: gammae
-    end function magnetic_diffusivity
+        xlambda = sqrt(3d0*pow3(zbar))*pow(gamma,-1.5d0)*f + 1d0
+        eta = 3.d11*zbar*log(xlambda)*pow(t,-1.5d0)             ! magnetic diffusivity
+        eta = eta/(1.d0-1.20487d0*exp(-1.0576d0*pow(zbar,0.347044d0))) ! correction: gammae
+    end subroutine magnetic_diffusivity
 
 
 

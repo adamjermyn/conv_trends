@@ -166,6 +166,8 @@
            use identification
            use diffusivities
            use utilities
+           use magnetism
+           use penetration
            use mdot
            use structure
            integer, intent(in) :: id, n
@@ -183,11 +185,13 @@
 
            ! Quantities that are one per CZ
            integer, parameter :: nQs = 30
-           integer, parameter :: nZs = 5 ! Max # of CZs
+           integer, parameter :: nZs = 7 ! Max # of CZs
+           integer :: nFound
            logical :: sc_exists(nZs)
            integer, dimension(nZs) :: sc_top, sc_bottom
            character(len=100) :: Q_names(nQs)
            character(len=100) :: cz_names(nZs)
+           character(len=100) :: cz_name
            real(dp) :: outputs(nQs, nZs)
            real(dp) :: Ra(nZs), Pm(nZs), Pr(nZs), nu(nZs), alpha(nZs), eta(nZs), dr(nZs)
 
@@ -209,8 +213,23 @@
            cz_names(i) = 'HeII'; i = i+1
            cz_names(i) = 'FeCZ'; i = i+1
            cz_names(i) = 'Core'; i = i+1
+           cz_names(i) = 'Envelope'; i = i+1
 
            ! Identify which CZs, if any, exist
+           sc_exists = .false.
+           sc_top = -1
+           sc_bottom = -1
+           call get_conv_regions(s, nZs, nFound)
+           do i=1,nFound
+            call classify_conv_region(s, s% mixing_region_top(i), s% mixing_region_bottom(i), cz_name)
+            do k=1,nZs
+               if (cz_names(k) == cz_name) then
+                  sc_top(k) = s% mixing_region_top(i)
+                  sc_bottom(k) = s% mixing_region_bottom(i)
+                  sc_exists(k) = .true.
+               end if
+            end do
+           end do
 
            ! Quantities in the CZs
            ! Quantities with profiles are radially averaged, weighted by dr unless otherwise specified.  
@@ -236,11 +255,11 @@
 
                i = i+1
                Q_names(i) = 'pressure_scale_height_top'
-               outputs(i,k) = s%scale_height(s%sc_top(k))
+               outputs(i,k) = s%scale_height(sc_top(k))
 
                i = i+1
                Q_names(i) = 'pressure_scale_height_bottom'
-               outputs(i,k) = s%scale_height(s%sc_bottom(k))
+               outputs(i,k) = s%scale_height(sc_bottom(k))
 
                i = i+1
                Q_names(i) = 'density'
@@ -276,23 +295,23 @@
 
                i = i+1
                Q_names(i) = 'cz_top_r'
-               outputs(i,k) = s%r(s%sc_top(k))
+               outputs(i,k) = s%r(sc_top(k))
 
                i = i+1
                Q_names(i) = 'cz_bottom_r'
-               outputs(i,k) = s%r(s%sc_bottom(k))
+               outputs(i,k) = s%r(sc_bottom(k))
 
                i = i+1
                Q_names(i) = 'cz_dtau'
-               outputs(i,k) = integrate_dr(s, sc_top(k), sc_bottom(k), dtau_dr, outputs(i,k))
+               call integrate_dr(s, sc_top(k), sc_bottom(k), dtau_dr, outputs(i,k))
 
                i = i+1
                Q_names(i) = 'cz_top_xm'
-               outputs(i,k) = integrate_dm(s, 1, sc_top(k), unity, outputs(i,k))
+               call integrate_dm(s, 1, sc_top(k), unity, outputs(i,k))
 
                i = i+1
                Q_names(i) = 'cz_bottom_xm'
-               outputs(i,k) = integrate_dm(s, 1, sc_bottom(k), unity, outputs(i,k))
+               call integrate_dm(s, 1, sc_bottom(k), unity, outputs(i,k))
 
                i = i+1
                Q_names(i) = 'cz_top_tau'
@@ -304,11 +323,11 @@
 
                i = i+1
                Q_names(i) = 'B_shutoff'
-               outputs(i,k) = max_val(s, sc_top(k), sc_bottom(k), B_shutoff_conv, outputs(i,k))
+               call max_val(s, sc_top(k), sc_bottom(k), B_shutoff_conv, outputs(i,k))
 
                i = i+1
                Q_names(i) = 'B_equipartition_conv_max'
-               outputs(i,k) = max_val(s, sc_top(k), sc_bottom(k), B_equipartition_conv, outputs(i,k))
+               call max_val(s, sc_top(k), sc_bottom(k), B_equipartition_conv, outputs(i,k))
 
                i = i+1
                Q_names(i) = 'B_equipartition_conv'
@@ -320,7 +339,7 @@
 
                i = i+1
                Q_names(i) = 'B_diffusion_to_CZ_top'
-               outputs(i,k) = compute_B_diffusion_time(s, sc_top(k))
+               call compute_B_diffusion_time(s, sc_top(k), outputs(i,k))
 
             end if
            end do
@@ -372,22 +391,19 @@
 
 
         subroutine data_for_extra_profile_columns(id, n, nz, names, vals, ierr)
+           use diffusivities
            use star_def, only: star_info, maxlen_profile_column_name
            use const_def, only: dp
            use math_lib, only: safe_log10
            integer, intent(in) :: id, n, nz
            character (len=maxlen_profile_column_name) :: names(n)
-           real(dp) :: vals(nz,n), rsun , pi, clight
+           real(dp) :: vals(nz,n) 
            integer, intent(out) :: ierr
            type (star_info), pointer :: s
            integer :: k
            ierr = 0
            call star_ptr(id, s, ierr)
            if (ierr /= 0) return
-
-           pi = 3.1415
-           rsun = 6.96e10
-           clight = 2.99792458e10
 
            names(1) = 'log_F_div_rhocs3'
 
@@ -511,56 +527,5 @@
          call star_ptr(id, s, ierr)
          if (ierr /= 0) return
       end subroutine extras_after_evolve
-
-
-      subroutine compute_dm_core(s, m_core, dm_core, dr_core, dr_core_div_h)
-         type (star_info), pointer :: s
-         real(dp), parameter :: f = 0.86d0
-         real(dp), parameter :: xi = 0.6d0
-         integer :: k, j
-         real(dp) :: Lint, delta_r, Lavg, RHS, dr, h
-         real(dp), intent(out) :: m_core, dm_core, dr_core, dr_core_div_h
-
-         delta_r = 0d0
-         Lint = 0d0
-
-         ! Integrate over CZ
-         do j=s%nz,1,-1
-            if (s%brunt_N2(j) > 0d0) then
-               ! Means we've hit a radiative zone
-               m_core = s%m(j)
-               h = s%scale_height(j)
-               k = j
-               exit
-            end if
-
-            dr = s%dm(j) / (4d0 * pi * pow2(s%r(j)) * s%rho(j))
-            Lint = Lint + s%L_conv(j) * dr
-            delta_r = delta_r + dr
-
-         end do 
-
-         ! Calculate target RHS
-         RHS = (1d0 - f) * Lint
-         Lavg = Lint / delta_r
-         Lint = 0d0
-
-         ! Integrate over RZ until we find the edge of the PZ
-         delta_r = 0d0
-         do j=min(s%nz,k+1),1,-1
-            dr = s%dm(j) / (4d0 * pi * pow2(s%r(j)) * s%rho(j))
-            delta_r = delta_r + dr
-            Lint = Lint + (xi * f * Lavg + s%L(j) * (s%grada(j) / s%gradr(j) - 1d0)) * dr
-
-            if (Lint > RHS) then
-               dm_core = s%m(j) - m_core
-               dr_core = delta_r
-               dr_core_div_h = delta_r / h
-               exit
-            end if
-
-         end do             
-      
-      end subroutine compute_dm_core
 
       end module run_star_extras

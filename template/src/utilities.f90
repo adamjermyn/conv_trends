@@ -51,7 +51,7 @@ contains
            real(dp), intent(out) :: val
         end subroutine do1
         end interface
-        real(dp), intent(out) :: avg
+        real(dp), intent(out) :: integral
 
         integer :: k
         real(dp) :: dr, val
@@ -76,7 +76,7 @@ contains
            real(dp), intent(out) :: val
         end subroutine do1
         end interface
-        real(dp), intent(out) :: avg
+        real(dp), intent(out) :: integral
 
         integer :: k
         real(dp) :: val
@@ -105,9 +105,9 @@ contains
         integer :: k
         real(dp) :: dr, val, integral_dr
 
-        integral_dr = integrate_dr(s,nzlo,nzhi,do1,val)
-        dr = integrate_dr(s,nzlo,nzhi,unity,val)
-        avg = integral_dr / dz
+        call integrate_dr(s,nzlo,nzhi,do1,integral_dr)
+        call integrate_dr(s,nzlo,nzhi,unity,dr)
+        avg = integral_dr / dr
     end subroutine r_average
 
         
