@@ -13,7 +13,7 @@ STAR = star
 endif
 
 # STAR_WORK_OBJS defined in makefile_header
-OBJS = $(STAR_WORK_OBJS) run.o diffusivities.o utilities.o
+OBJS = $(STAR_WORK_OBJS) run.o diffusivities.o utilities.o identification.o magnetism.o mdot.o penetration.o structure.o
 
 WORK_DIR = ..
 WORK_SRC_DIR = $(WORK_DIR)/src
@@ -43,7 +43,23 @@ diffusivities.o: $(WORK_SRC_DIR)/diffusivities.f90
 utilities.o: $(WORK_SRC_DIR)/utilities.f90
 	$(WORK_COMPILE) $(WARN) $(WORK_SRC_DIR)/utilities.f90
 
-run_star_extras.o: utilities.o diffusivities.o $(WORK_SRC_DIR)/run_star_extras.f90
+identification.o: $(WORK_SRC_DIR)/identification.f90
+	$(WORK_COMPILE) $(WARN) $(WORK_SRC_DIR)/identification.f90
+
+magnetism.o: $(WORK_SRC_DIR)/magnetism.f90 diffusivities.o
+	$(WORK_COMPILE) $(WARN) $(WORK_SRC_DIR)/magnetism.f90
+
+penetration.o: $(WORK_SRC_DIR)/penetration.f90
+	$(WORK_COMPILE) $(WARN) $(WORK_SRC_DIR)/penetration.f90
+
+structure.o: $(WORK_SRC_DIR)/structure.f90
+	$(WORK_COMPILE) $(WARN) $(WORK_SRC_DIR)/structure.f90
+
+
+mdot.o: $(WORK_SRC_DIR)/mdot.f90
+	$(WORK_COMPILE) $(WARN) $(WORK_SRC_DIR)/mdot.f90
+
+run_star_extras.o: diffusivities.o utilities.o identification.o magnetism.o mdot.o penetration.o structure.o $(WORK_SRC_DIR)/run_star_extras.f90
 	$(WORK_COMPILE) $(WORK_SRC_DIR)/run_star_extras.f90
 
 %.o: $(STAR_JOB_DIR)/%.f90
