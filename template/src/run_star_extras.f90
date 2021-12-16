@@ -158,7 +158,7 @@
            ierr = 0
            call star_ptr(id, s, ierr)
            if (ierr /= 0) return
-           how_many_extra_history_columns = 135
+           how_many_extra_history_columns = 185
         end function how_many_extra_history_columns
 
 
@@ -184,7 +184,7 @@
            character(len=100) :: name
 
            ! Quantities that are one per CZ
-           integer, parameter :: nQs = 30
+           integer, parameter :: nQs = 26
            integer, parameter :: nZs = 7 ! Max # of CZs
            integer :: nFound
            logical :: sc_exists(nZs)
@@ -196,7 +196,7 @@
            real(dp) :: Ra(nZs), Pm(nZs), Pr(nZs), nu(nZs), alpha(nZs), eta(nZs), dr(nZs)
 
            ! Quantities that are one per star
-           integer, parameter :: nOffs = 10
+           integer, parameter :: nOffs = 3
            character(len=100) :: one_off_names(nOffs)
            real(dp) :: one_off_outputs(nOffs)
            real(dp) :: wind
@@ -369,8 +369,8 @@
            end do
 
            do i=1,nOffs
-            names(k) = one_off_names(k)
-            vals(k) = one_off_outputs(k)
+            names(k) = one_off_names(i)
+            vals(k) = one_off_outputs(i)
             k = k + 1
            end do
 
