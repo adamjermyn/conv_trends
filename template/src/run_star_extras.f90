@@ -1636,10 +1636,11 @@
          real(dp), parameter :: f = 0.86d0
          real(dp), parameter :: xi = 0.6d0
          integer :: k, j
-         real(dp) :: Lint, delta_r, Lavg, RHS, dr, h
+         real(dp) :: Lint, delta_r, V_CZ, Favg, RHS, dr, h
          real(dp), intent(out) :: m_core, dm_core, dr_core, dr_core_div_h
 
          delta_r = 0d0
+         V_CZ = 0d0
          Lint = 0d0
 
          ! Integrate over CZ
@@ -1655,12 +1656,13 @@
             dr = s%dm(j) / (4d0 * pi * pow2(s%r(j)) * s%rho(j))
             Lint = Lint + s%L_conv(j) * dr
             delta_r = delta_r + dr
+            V_CZ = V_CZ + s%dm(j)/s%rho(j)
 
          end do 
 
          ! Calculate target RHS
-         RHS = (1d0 - f) * Lint
-         Lavg = Lint / delta_r
+         Favg = Lint / V_CZ
+         RHS = (1d0 - f) * V_CZ * Favg
          Lint = 0d0
 
          ! Integrate over RZ until we find the edge of the PZ
@@ -1668,7 +1670,7 @@
          do j=min(s%nz,k+1),1,-1
             dr = s%dm(j) / (4d0 * pi * pow2(s%r(j)) * s%rho(j))
             delta_r = delta_r + dr
-            Lint = Lint + (xi * f * Lavg + s%L(j) * (s%grada(j) / s%gradr(j) - 1d0)) * dr
+            Lint = Lint + (xi * f * 4d0 * pi * pow2(s%r(j)) * Favg + s%L(j) * (s%grada(j) / s%gradr(j) - 1d0)) * dr
 
             if (Lint > RHS) then
                dm_core = s%m(j) - m_core
