@@ -33,7 +33,8 @@
       use_Ledoux_criterion = .true.
 
       ! OUTPUT
-      profile_interval = 10
+      profile_interval = 1
+      max_num_profile_models = 100000
       history_interval = 1
 
       ! WHEN TO STOP
