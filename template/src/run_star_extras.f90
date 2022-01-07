@@ -158,7 +158,7 @@
            ierr = 0
            call star_ptr(id, s, ierr)
            if (ierr /= 0) return
-           how_many_extra_history_columns = 135
+           how_many_extra_history_columns = 136
         end function how_many_extra_history_columns
 
 
@@ -197,7 +197,7 @@
            real(dp) :: FeCZ_b_p_eq, FeCZ_b_p_max, dr_core, dr_core_div_h
            real(dp) :: mixing_length_alpha, rho_surf, wind, m_conv_core, dm_core
            real(dp) :: v_max_core, v_aver_core,b_eq_core,b_max_core,rho_aver_core, hp_aver_core, turnover_core
-           real(dp) :: hp_core_top, r_core, m_core, mach_top_cz_core, mach_aver_ahp_core, rho_aver_ahp_core, v_aver_ahp_core
+           real(dp) :: hp_core_top, rho_core_top, r_core, m_core, mach_top_cz_core, mach_aver_ahp_core, rho_aver_ahp_core, v_aver_ahp_core
            !real(dp), DIMENSION(4) :: b_eq, b_max, hp_aver, sc_turnover, mach_aver_ahp, rho_aver_ahp, b_surf_aver, b_surf_max, v_surf_aver
            integer, intent(out) :: ierr
            integer ::  i, j, k, m, num_conv_regions, sc1_top, sc2_top, sc3_top, sc4_top
@@ -298,6 +298,7 @@
           mach_top_cz_core = 0d0
           mach_aver_ahp_core = 0d0
           rho_aver_ahp_core = 0d0
+          rho_core_top = 0d0
 
           HI_tau_eta = 0d0
           HeI_tau_eta = 0d0
@@ -364,8 +365,6 @@
               !write(*,*) 'HP average, boundary:', hp_aver_core/Rsun, s% scale_height(sc_convective_core)/Rsun
               call get_turnover(mixing_length_alpha, v_aver_core, hp_aver_core, turnover_core)
               !write(*,*) 'Turnover V_aver+Hp_aver:', turnover_core/(3600*24)
-              m_core = s% m(sc_convective_core)
-              r_core = s% r(sc_convective_core)
               hp_core_top = s% scale_height(sc_convective_core)
               call get_conv_ahp(id, ierr, sc_convective_core, s% nz - 1, v_aver_ahp_core, &
                                 mach_top_cz_core, mach_aver_ahp_core, rho_aver_ahp_core)
@@ -382,7 +381,7 @@
 
 
            call eval_Vink_wind(wind, s%Teff, s%m(1), s%L(1), 1d0 - s%surface_h1 - s%surface_he4)
-           call compute_dm_core(s, id, m_conv_core, dm_core, dr_core, dr_core_div_h)
+           call compute_dm_core(s, id, m_conv_core, dm_core, dr_core, dr_core_div_h, r_core, m_core, rho_core_top)
 
            ! Identify number of convective regions above a certain temperature  (Max 4, HI, HeI, HeII, FeCZ)
 
@@ -810,6 +809,9 @@
            vals(133) = HeI_eta
            vals(134) = HeII_eta
            vals(135) = FeCZ_eta
+
+           names(136) = 'rho_core_top'
+           vals(136) = rho_core_top
 
         end subroutine data_for_extra_history_columns
 
@@ -1631,7 +1633,7 @@
       end subroutine extras_after_evolve
 
 
-      subroutine compute_dm_core(s, id, m_core, dm_core, dr_core, dr_core_div_h)
+      subroutine compute_dm_core(s, id, m_core, dm_core, dr_core, dr_core_div_h, r_core, m_core, rho_core_top)
          use eos_def
          use star_lib
          type (star_info), pointer :: s
@@ -1641,7 +1643,7 @@
          integer :: k, j, nz, ierr
          real(dp) :: Lint, delta_r, V_CZ, Favg, RHS, dr, h
          real(dp) :: Rho, T, logRho, logT, Pr
-         real(dp), intent(out) :: m_core, dm_core, dr_core, dr_core_div_h
+         real(dp), intent(out) :: m_core, dm_core, dr_core, dr_core_div_h, r_core, m_core, rho_core_top
          real(dp), dimension(num_eos_basic_results) :: res, dres_dlnRho, dres_dlnT
          real(dp) :: dres_dxa(num_eos_d_dxa_results,s% species)
          real(dp) :: kap, dlnkap_dlnRho, dlnkap_dlnT, frac_Type2
@@ -1685,6 +1687,8 @@
             if (gradr(j) < grada(j)) then
                ! Means we've hit a radiative zone
                m_core = s%m(j)
+               r_core = s%r(j)
+               rho_core_top = s%rho(j)
                h = s%scale_height(j)
                k = j
                exit
