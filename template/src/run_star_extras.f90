@@ -824,7 +824,7 @@
            ierr = 0
            call star_ptr(id, s, ierr)
            if (ierr /= 0) return
-           how_many_extra_profile_columns = 3
+           how_many_extra_profile_columns = 5
         end function how_many_extra_profile_columns
 
         subroutine get_conv_regions_above_T(id, T_limit, ierr, num_conv_regions)
@@ -1492,6 +1492,7 @@
          end subroutine eval_Vink_wind
 
         subroutine data_for_extra_profile_columns(id, n, nz, names, vals, ierr)
+           use eos_def
            use star_def, only: star_info, maxlen_profile_column_name
            use const_def, only: dp
            use math_lib, only: safe_log10
@@ -1500,10 +1501,17 @@
            real(dp) :: vals(nz,n), rsun , pi, clight
            integer, intent(out) :: ierr
            type (star_info), pointer :: s
-           integer :: k
+           integer :: j, k
+           real(dp), dimension(num_eos_basic_results) :: res, dres_dlnRho, dres_dlnT
+           real(dp), dimension(:,:), allocatable :: dres_dxa
+           real(dp) :: kap, dlnkap_dlnRho, dlnkap_dlnT, frac_Type2
+           real(dp) :: gradr(nz), grada(nz)
+           real(dp) :: Rho, T, logRho, logT, Pr
            ierr = 0
            call star_ptr(id, s, ierr)
            if (ierr /= 0) return
+
+           allocate(dres_dxa(num_eos_d_dxa_results,s% species))
 
            pi = 3.1415
            rsun = 6.96e10
@@ -1511,7 +1519,6 @@
 
            !!!
 
-           if (n /= 3) stop 'data_for_extra_profile_columns'
            names(1) = 'log_f_div_rhocs3'
 
            do k = 1, nz
@@ -1534,6 +1541,37 @@
              vals(k,3) = vals(k,3) /(s% Rho(k) * s% csound(k)**3)           ! F_edd/F_max
              vals(k,3) = safe_log10(vals(k,3))
            end do
+
+           names(4) = 'gradR_core_composition'
+           names(5) = 'gradA_core_composition'
+                    ! Recalculate gradR and gradA assuming the composition of the core.
+         do j=1,nz
+            ! Call the EOS with the composition of the convective core
+            Rho = s%rho(j)
+            T = s%T(j)
+            logRho = log10(Rho)
+            logT = log10(T)
+            ierr = 0
+            call star_get_eos( &
+               id, 0, s%xa(:,nz), & ! k = 0 means not being called for a particular cell
+               Rho, logRho, T, logT, & 
+               res, dres_dlnRho, dres_dlnT, &
+               dres_dxa, ierr)
+            grada(j) = res(i_grad_ad)
+
+            ! Call the opacity with the composition of the convective core.
+            ierr = 0
+            call star_get_kap( &
+               id, 0, s%zbar(nz), s%xa(:,nz), logRho, logT, &
+               res(i_lnfree_e), dres_dlnRho(i_lnfree_e), dres_dlnT(i_lnfree_e), &
+               kap, dlnkap_dlnRho, dlnkap_dlnT, frac_Type2, ierr)
+
+            Pr = one_third*crad*T*T*T*T
+            gradr(j) = s%P(j)*kap*s%L(j) / (16*pi*clight*s%m(j)*s%cgrav(j)*Pr)
+
+            vals(j,4) = gradr(j)
+            vals(j,5) = grada(j)
+         end do
 
            !!!!
 
