@@ -48,7 +48,7 @@
       ! GOLD TOLERANCES
       use_gold_tolerances = .true.
       use_gold2_tolerances = .true.
-      delta_lg_XH_cntr_limit = 0.01
+      delta_lg_XH_cntr_limit = 0.003
       min_timestep_limit = 1d-1
 
       !better resolution of the Henyey hook
