@@ -35,6 +35,16 @@ contains
 
     end subroutine thermal_diffusivity
 
+    subroutine prandtl(s, k, Pr)
+        type (star_info), pointer :: s
+        integer, intent(in) :: k
+        real(dp), intent(out) :: Pr
+        real(dp) :: nu, alpha
+
+        call viscosity(s,k,nu)
+        call thermal_diffusivity(s,k,alpha)
+        Pr = nu / alpha
+    end subroutine prandtl
 
     !> Computes the electrical conductivity following
     !! S.-C. YOON Oct. 10, 2003.

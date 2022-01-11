@@ -158,7 +158,7 @@
            ierr = 0
            call star_ptr(id, s, ierr)
            if (ierr /= 0) return
-           how_many_extra_history_columns = 207
+           how_many_extra_history_columns = 213
         end function how_many_extra_history_columns
 
 
@@ -184,7 +184,7 @@
            character(len=100) :: name
 
            ! Quantities that are one per CZ
-           integer, parameter :: nQs = 34
+           integer, parameter :: nQs = 35
            integer, parameter :: nZs = 6 ! Max # of CZs
            integer :: nFound
            logical :: sc_exists(nZs)
@@ -244,6 +244,10 @@
                i = i+1
                Q_names(i) = 'thermal_diffusivity'
                call r_average(s, sc_top(k), sc_bottom(k), thermal_diffusivity, outputs(i,k))
+
+               i = i+1
+               Q_names(i) = 'prandtl'
+               call r_average(s, sc_top(k), sc_bottom(k), prandtl, outputs(i,k))
 
                i = i+1
                Q_names(i) = 'magnetic_diffusivity'
