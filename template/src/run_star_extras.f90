@@ -158,7 +158,7 @@
            ierr = 0
            call star_ptr(id, s, ierr)
            if (ierr /= 0) return
-           how_many_extra_history_columns = 213
+           how_many_extra_history_columns = 219
         end function how_many_extra_history_columns
 
 
@@ -184,7 +184,7 @@
            character(len=100) :: name
 
            ! Quantities that are one per CZ
-           integer, parameter :: nQs = 35
+           integer, parameter :: nQs = 36
            integer, parameter :: nZs = 6 ! Max # of CZs
            integer :: nFound
            logical :: sc_exists(nZs)
@@ -372,6 +372,10 @@
                i = i+1
                Q_names(i) = 'L_div_Ledd'
                call r_average(s, sc_top(k), sc_bottom(k), L_div_Ledd, outputs(i,k))
+
+               i = i+1
+               Q_names(i) = 'Nusselt'
+               call r_average(s, sc_top(k), sc_bottom(k), Nusselt, outputs(i,k))
 
                i = i+1
                Q_names(i) = 'L_div_Ledd_max'
