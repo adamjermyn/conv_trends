@@ -37,6 +37,40 @@ contains
         dtdr = s%opacity(k) * s%rho(k)
     end subroutine dtau_dr
 
+    subroutine bottom_r(s,k,r)
+        type (star_info), pointer :: s
+        integer, intent(in) :: k
+        real(dp), intent(out) :: r
+
+        if (k == 1) then
+            r = 0d0
+        else
+            r = s%r(k-1)
+        end if
+    end subroutine bottom_r
+
+    subroutine Nusselt(s,k,Nu)
+        type (star_info), pointer :: s
+        integer, intent(in) :: k
+        real(dp), intent(out) :: Nu
+
+        ! Nu = 1 + F_c / (F_r - F_{r,ad})
+        ! = (F_r + F_c - F_{r,ad}) / (F_r - F_{r,ad})
+        ! = (F - F_{r,ad}) / (F_r - F_{r,ad})
+        !
+        ! Now we can write
+        !
+        ! F_r = F (grad/gradR)
+        ! F_{r,ad} = F (gradA/gradR)
+        !
+        ! So
+        !
+        ! Nu = (1 - gradA/gradR)/(grad/gradR - gradA/gradR)
+        ! = (gradR - gradA) / (grad - gradA) 
+
+        Nu = (s%gradR(k) - s%gradA(k)) / s%gradT_sub_grada(k)
+    end subroutine Nusselt
+
     subroutine conv_vel(s,k,v)
         type (star_info), pointer :: s
         integer, intent(in) :: k
