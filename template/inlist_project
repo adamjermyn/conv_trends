@@ -50,9 +50,6 @@
       delta_lg_XH_cntr_limit = 0.01
       min_timestep_limit = 1d-1
 
-      !better resolution of the Henyey hook
-      delta_lg_XH_cntr_max = -2
-
       !limit on magnitude of relative change at any grid point
       delta_lgTeff_limit = 0.005
       delta_lgTeff_hard_limit = 0.005
