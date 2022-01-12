@@ -327,7 +327,7 @@
 
                i = i+1
                Q_names(i) = 'cz_bottom_r'
-               outputs(i,k) = s%r(sc_bottom(k))
+               call bottom_r(s, sc_bottom(k), outputs(i,k))
 
                i = i+1
                Q_names(i) = 'cz_dtau'
