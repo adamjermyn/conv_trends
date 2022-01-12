@@ -224,6 +224,8 @@
             call classify_conv_region(s, s% mixing_region_top(i), s% mixing_region_bottom(i), cz_name)
             do k=1,nZs
                if (cz_names(k) == cz_name) then
+                  ! These are the indices of the inner-most and outer-most cells of each cz.
+                  ! That means the cz's lie between the faces (top, bottom-1)
                   sc_top(k) = s% mixing_region_top(i)
                   sc_bottom(k) = s% mixing_region_bottom(i)
                   sc_exists(k) = .true.
@@ -290,20 +292,20 @@
                call r_average(s, sc_top(k), sc_bottom(k), gradr_sub_grada, outputs(i,k))
 
                i = i+1
-               Q_names(i) = 'conv_vel'
-               call r_average(s, sc_top(k), sc_bottom(k), conv_vel, outputs(i,k))
+               Q_names(i) = 'conv_vel' ! This is a face quantity defined on the inside of the CZ, so want to go from (top+1...bottom-1)
+               call r_average(s, sc_top(k)+1, sc_bottom(k)-1, conv_vel, outputs(i,k))
 
                i = i+1
-               Q_names(i) = 'conv_vel_div_r'
-               call r_average(s, sc_top(k), sc_bottom(k), conv_vel_div_r, outputs(i,k))
+               Q_names(i) = 'conv_vel_div_r' ! This is a face quantity defined on the inside of the CZ, so want to go from (top+1...bottom-1)
+               call r_average(s, sc_top(k)+1, sc_bottom(k)-1, conv_vel_div_r, outputs(i,k))
 
                i = i+1
-               Q_names(i) = 'L_conv_div_L'
-               call r_average(s, sc_top(k), sc_bottom(k), L_conv_div_L, outputs(i,k))
+               Q_names(i) = 'L_conv_div_L' ! This is a face quantity defined on the inside of the CZ, so want to go from (top+1...bottom-1)
+               call r_average(s, sc_top(k)+1, sc_bottom(k)-1, L_conv_div_L, outputs(i,k))
 
                i = i+1
-               Q_names(i) = 'conv_vel_max'
-               call max_val(s, sc_top(k), sc_bottom(k), conv_vel, outputs(i,k))
+               Q_names(i) = 'conv_vel_max' ! This is a face quantity defined on the inside of the CZ, so want to go from (top+1...bottom-1)
+               call max_val(s, sc_top(k)+1, sc_bottom(k)-1, conv_vel, outputs(i,k))
 
                i = i+1
                Q_names(i) = 'stiffness_bottom'
@@ -334,11 +336,11 @@
                call integrate_dr(s, sc_top(k), sc_bottom(k), dtau_dr, outputs(i,k))
 
                i = i+1
-               Q_names(i) = 'cz_top_xm'
-               call integrate_dm(s, 1, sc_top(k), unity, outputs(i,k))
+               Q_names(i) = 'cz_top_xm' ! Integrate from cell 1 down to cell top-1 because we want xm of the top face. 
+               call integrate_dm(s, 1, sc_top(k)-1, unity, outputs(i,k))
 
                i = i+1
-               Q_names(i) = 'cz_bottom_xm'
+               Q_names(i) = 'cz_bottom_xm' ! Integrate from cell 1 down to cell bottom because we want xm of the bottom face (which is face bottom+1). 
                call integrate_dm(s, 1, sc_bottom(k), unity, outputs(i,k))
 
                i = i+1
@@ -347,19 +349,19 @@
 
                i = i+1
                Q_names(i) = 'cz_bottom_tau'
-               outputs(i,k) = s%tau(sc_bottom(k))
+               call bottom_tau(s,k,outputs(i,k))
 
                i = i+1
-               Q_names(i) = 'B_shutoff'
-               call max_val(s, sc_top(k), sc_bottom(k), B_shutoff_conv, outputs(i,k))
+               Q_names(i) = 'B_shutoff'! This is a face quantity defined on the inside of the CZ, so want to go from (top+1...bottom-1)
+               call max_val(s, sc_top(k)+1, sc_bottom(k)-1, B_shutoff_conv, outputs(i,k))
 
                i = i+1
-               Q_names(i) = 'B_equipartition_conv_max'
-               call max_val(s, sc_top(k), sc_bottom(k), B_equipartition_conv, outputs(i,k))
+               Q_names(i) = 'B_equipartition_conv_max'! This is a face quantity defined on the inside of the CZ, so want to go from (top+1...bottom-1)
+               call max_val(s, sc_top(k)+1, sc_bottom(k)-1, B_equipartition_conv, outputs(i,k))
 
                i = i+1
-               Q_names(i) = 'B_equipartition_conv'
-               call r_average(s, sc_top(k), sc_bottom(k), B_equipartition_conv, outputs(i,k))
+               Q_names(i) = 'B_equipartition_conv'! This is a face quantity defined on the inside of the CZ, so want to go from (top+1...bottom-1)
+               call r_average(s, sc_top(k)+1, sc_bottom(k)-1, B_equipartition_conv, outputs(i,k))
 
                i = i+1
                Q_names(i) = 'B_equipartition_pressure'
@@ -367,19 +369,21 @@
 
                i = i+1
                Q_names(i) = 'B_diffusion_to_CZ_top'
-               call compute_B_diffusion_time(s, sc_top(k), outputs(i,k))
+               call compute_B_diffusion_time(s, sc_top(k), outputs(i,k)) ! This one handles going to the outer face inside the call.
 
                i = i+1
-               Q_names(i) = 'L_div_Ledd'
-               call r_average(s, sc_top(k), sc_bottom(k), L_div_Ledd, outputs(i,k))
+               Q_names(i) = 'L_div_Ledd'! This is a face quantity but it's defined perfectly well on the edges of the CZ, so we go from (top,bottom+1)
+                                         ! L=0 at the center so we can just exclude that if the CZ runs all the way to the center.
+               call r_average(s, sc_top(k), min(s%nz,sc_bottom(k)+1), L_div_Ledd, outputs(i,k))
 
                i = i+1
-               Q_names(i) = 'Nusselt'
-               call r_average(s, sc_top(k), sc_bottom(k), Nusselt, outputs(i,k))
+               Q_names(i) = 'Nusselt'! This is a face quantity defined on the inside of the CZ, so want to go from (top+1...bottom-1)
+               call r_average(s, sc_top(k)+1, sc_bottom(k)-1, Nusselt, outputs(i,k))
 
                i = i+1
-               Q_names(i) = 'L_div_Ledd_max'
-               call max_val(s, sc_top(k), sc_bottom(k), L_div_Ledd, outputs(i,k))
+               Q_names(i) = 'L_div_Ledd_max'! This is a face quantity but it's defined perfectly well on the edges of the CZ, so we go from (top,bottom+1).
+                                            ! L=0 at the center so we can just exclude that if the CZ runs all the way to the center.
+               call max_val(s, sc_top(k), min(s%nz,sc_bottom(k)+1), L_div_Ledd, outputs(i,k))
 
             end if
            end do

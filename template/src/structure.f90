@@ -42,12 +42,24 @@ contains
         integer, intent(in) :: k
         real(dp), intent(out) :: r
 
-        if (k == 1) then
+        if (k == s%nz) then
             r = 0d0
         else
-            r = s%r(k-1)
+            r = s%r(k+1)
         end if
     end subroutine bottom_r
+
+    subroutine bottom_tau(s,k,tau)
+        type (star_info), pointer :: s
+        integer, intent(in) :: k
+        real(dp), intent(out) :: tau
+
+        if (k == s%nz) then
+            tau = s%tau(k)+s%opacity(k)*s%rho(k)*s%r(k)
+        else
+            tau = s%tau(k+1)
+        end if
+    end subroutine bottom_tau
 
     subroutine Nusselt(s,k,Nu)
         type (star_info), pointer :: s
@@ -122,7 +134,7 @@ contains
             dr = s%dm(k) / (4d0 * pi * pow2(s%r(k)) * s%rho(k))
             vc = vc + s%conv_vel(k) * dr
             dz = dz + dr
-            if (dz > 0.2d0*s%scale_height(k_top)) then
+            if (dz > 0.2d0*s%scale_height(k_top) .or. k == k_bottom) then
                 vc = vc / dz
                 brunt2_CZ = pow2(vc/s%scale_height(k_top))
                 exit
@@ -133,7 +145,7 @@ contains
         do k=k_top,1,-1
             dr = s%dm(k) / (4d0 * pi * pow2(s%r(k)) * s%rho(k))
             dz = dz + dr
-            if (dz > 0.2d0*s%scale_height(k_top)) then
+            if (dz > 0.2d0*s%scale_height(k_top) .or. k == 1) then
                 brunt2_RZ = s%brunt_N2(k)
                 exit
             end if
@@ -161,7 +173,7 @@ contains
             dr = s%dm(k) / (4d0 * pi * pow2(s%r(k)) * s%rho(k))
             vc = vc + s%conv_vel(k) * dr
             dz = dz + dr
-            if (dz > 0.2d0*s%scale_height(k_top)) then
+            if (dz > 0.2d0*s%scale_height(k_top) .or. k == k_top) then
                 vc = vc / dz
                 brunt2_CZ = pow2(vc/s%scale_height(k_top))
                 exit
