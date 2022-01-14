@@ -122,11 +122,13 @@ contains
         type (star_info), pointer :: s
         integer, intent(in) :: k_top, k_bottom
         real(dp), intent(out) :: val
+        real(dp) :: dr
         integer :: k
 
         val = 0d0
         do k=k_top,k_bottom
             if (s%conv_vel(k) > 0d0) then
+                dr = s%dm(k) / (4d0 * pi * pow2(s%r(k)) * s%rho(k))
                 val = val + dr / s%conv_vel(k)
             end if
         end do
