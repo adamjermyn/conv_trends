@@ -157,7 +157,7 @@ contains
         end do
 
         dz = 0d0
-        do k=k_top-1,1,-1
+        do k=k_top-1,1,-1! k_top is the top-most cell of the CZ, so we start the RZ at k_top-1
             dr = s%dm(k) / (4d0 * pi * pow2(s%r(k)) * s%rho(k))
             brunt2_RZ = brunt2_RZ + dr * s%brunt_N2(k)
             dz = dz + dr
@@ -195,7 +195,7 @@ contains
         end do
 
         dz = 0d0
-        do k=k_bottom+1,s%nz
+        do k=k_bottom+1,s%nz ! k_bottom is the bottom-most cell of the CZ, so we start the RZ at k_bottom+1
             dr = s%dm(k) / (4d0 * pi * pow2(s%r(k)) * s%rho(k))
             brunt2_RZ = brunt2_RZ + dr * s%brunt_N2(k)
             dz = dz + dr
