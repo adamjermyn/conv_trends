@@ -138,7 +138,7 @@ contains
             dr = s%dm(k) / (4d0 * pi * pow2(s%r(k)) * s%rho(k))
             brunt2_CZ = brunt2_CZ + dr * pow2(s%conv_vel(k)/s%scale_height(k))
             dz = dz + dr
-            if (dz > 0.2d0*s%scale_height(k_top) .or. k == k_bottom) then
+            if (dz > 0.3d0*s%scale_height(k_top) .or. k == k_bottom) then
                 brunt2_CZ = brunt2_CZ / dz
                 exit
             end if
@@ -149,7 +149,7 @@ contains
             dr = s%dm(k) / (4d0 * pi * pow2(s%r(k)) * s%rho(k))
             brunt2_RZ = brunt2_RZ + dr * s%brunt_N2(k)
             dz = dz + dr
-            if (dz > 0.2d0*s%scale_height(k_top) .or. k == 1) then
+            if (dz > 0.3d0*s%scale_height(k_top) .or. k == 1) then
                 brunt2_RZ = brunt2_RZ / dz
                 exit
             end if
