@@ -123,7 +123,7 @@ contains
         type (star_info), pointer :: s
         integer, intent(in) :: k_top, k_bottom
         real(dp), intent(out) :: val
-        real(dp) :: brunt2_CZ, brunt2_RZ, dz, dr, vc
+        real(dp) :: brunt2_CZ, brunt2_RZ, dz, dr
         integer :: k
 
         if (k_top == 1) then
@@ -133,13 +133,13 @@ contains
 
         dz = 0d0
         vc = 0d0
+        brunt2_CZ = 0d0
         do k=k_top,k_bottom
             dr = s%dm(k) / (4d0 * pi * pow2(s%r(k)) * s%rho(k))
-            vc = vc + s%conv_vel(k) * dr
+            brunt2_CZ = brunt2_CZ + dr * pow2(s%conv_vel(k)/s%scale_height(k))
             dz = dz + dr
             if (dz > 0.2d0*s%scale_height(k_top) .or. k == k_bottom) then
-                vc = vc / dz
-                brunt2_CZ = pow2(vc/s%scale_height(k_top))
+                brunt2_CZ = brunt2_CZ / dz
                 exit
             end if
         end do
@@ -147,9 +147,10 @@ contains
         dz = 0d0
         do k=k_top,1,-1
             dr = s%dm(k) / (4d0 * pi * pow2(s%r(k)) * s%rho(k))
+            brunt2_RZ = brunt2_RZ + dr * s%brunt_N2(k)
             dz = dz + dr
             if (dz > 0.2d0*s%scale_height(k_top) .or. k == 1) then
-                brunt2_RZ = s%brunt_N2(k)
+                brunt2_RZ = brunt2_RZ / dz
                 exit
             end if
         end do
