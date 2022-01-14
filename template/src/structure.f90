@@ -163,7 +163,7 @@ contains
             dr = s%dm(k) / (4d0 * pi * pow2(s%r(k)) * s%rho(k))
             brunt2_RZ = brunt2_RZ + dr * s%brunt_N2(k)
             dz = dz + dr
-            if (dz > 0.3d0*s%scale_height(k_top) .or. k == 1 .or. s$brunt_N2(k) < 0d0) then
+            if (dz > 0.3d0*s%scale_height(k_top) .or. k == 1 .or. s%brunt_N2(k) < 0d0) then
                 brunt2_RZ = brunt2_RZ / dz
                 exit
             end if
