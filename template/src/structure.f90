@@ -79,8 +79,11 @@ contains
         !
         ! Nu = (1 - gradA/gradR)/(grad/gradR - gradA/gradR)
         ! = (gradR - gradA) / (grad - gradA) 
+        !
+        ! Because MESA directly uses gradL in computing gradT we need
+        ! to use gradL not gradA.
 
-        Nu = (s%gradR(k) - s%gradA(k)) / s%gradT_sub_grada(k)
+        Nu = (s%gradR(k) - s%gradL(k)) / (s%gradT(k) - s%gradL(k))
     end subroutine Nusselt
 
     subroutine conv_vel(s,k,v)
