@@ -158,7 +158,7 @@
            ierr = 0
            call star_ptr(id, s, ierr)
            if (ierr /= 0) return
-           how_many_extra_history_columns = 219
+           how_many_extra_history_columns = 225
         end function how_many_extra_history_columns
 
 
@@ -184,7 +184,7 @@
            character(len=100) :: name
 
            ! Quantities that are one per CZ
-           integer, parameter :: nQs = 36
+           integer, parameter :: nQs = 37
            integer, parameter :: nZs = 6 ! Max # of CZs
            integer :: nFound
            logical :: sc_exists(nZs)
@@ -322,6 +322,10 @@
                i = i+1
                Q_names(i) = 'cz_dr'
                call integrate_dr(s, sc_top(k), sc_bottom(k), unity, outputs(i,k))
+
+               i = i+1
+               Q_names(i) = 'turnover_time'
+               call turnover(s, sc_top(k), sc_bottom(k), outputs(i,k))
 
                i = i+1
                Q_names(i) = 'cz_top_r'

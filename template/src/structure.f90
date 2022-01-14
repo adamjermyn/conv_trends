@@ -118,6 +118,19 @@ contains
         val = s%L(k) / (4d0 * pi * standard_cgrav * s%m(k) * clight / s%opacity(k))
     end subroutine L_div_Ledd
 
+    subroutine turnover(s,k_top,k_bottom,val)
+        type (star_info), pointer :: s
+        integer, intent(in) :: k_top, k_bottom
+        real(dp), intent(out) :: val
+        integer :: k
+
+        val = 0d0
+        do k=k_top,k_bottom
+            if (s%conv_vel(k) > 0d0) then
+                val = val + dr / s%conv_vel(k)
+            end if
+        end do
+    end subroutine turnover
 
     subroutine stiffness_top(s,k_top,k_bottom,val)
         type (star_info), pointer :: s
@@ -144,11 +157,11 @@ contains
         end do
 
         dz = 0d0
-        do k=k_top,1,-1
+        do k=k_top-1,1,-1
             dr = s%dm(k) / (4d0 * pi * pow2(s%r(k)) * s%rho(k))
             brunt2_RZ = brunt2_RZ + dr * s%brunt_N2(k)
             dz = dz + dr
-            if (dz > 0.3d0*s%scale_height(k_top) .or. k == 1) then
+            if (dz > 0.3d0*s%scale_height(k_top) .or. k == 1 .or. s$brunt_N2(k) < 0d0) then
                 brunt2_RZ = brunt2_RZ / dz
                 exit
             end if
@@ -182,11 +195,11 @@ contains
         end do
 
         dz = 0d0
-        do k=k_bottom,s%nz-1
+        do k=k_bottom+1,s%nz
             dr = s%dm(k) / (4d0 * pi * pow2(s%r(k)) * s%rho(k))
             brunt2_RZ = brunt2_RZ + dr * s%brunt_N2(k)
             dz = dz + dr
-            if (dz > 0.3d0*s%scale_height(k_bottom) .or. k == 1) then
+            if (dz > 0.3d0*s%scale_height(k_bottom) .or. k == s%nz .or. s%brunt_N2(k) < 0d0) then
                 brunt2_RZ = brunt2_RZ / dz
                 exit
             end if
