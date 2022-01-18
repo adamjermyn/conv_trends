@@ -1019,7 +1019,7 @@
          integer :: k
          real(dp) :: alpha, lnLambda, nu
          real(dp) :: dr
-         real(dp) :: gradr_sub_grada_avg, g_avg, eta, sig
+         real(dp) :: gradr_sub_grada_avg, g_avg, eta, sig, beta_avg, hp_avg
 
          ierr = 0
          call star_ptr(id, s, ierr)
@@ -1027,6 +1027,8 @@
 
          dz = s%r(sc_top) - s%r(sc_bottom)
 
+         hp_avg = 0d0
+         beta_avg = 0d0
          alpha_avg = 0d0
          nu_avg = 0d0
          eta_avg = 0d0
@@ -1047,21 +1049,25 @@
 
             dr = s%dm(k) / (4d0 * pi * pow2(s%rmid(k)) * s%rho(k))
 
+            hp_avg = hp_avg + dr * s%scale_height(k)
             alpha_avg = alpha_avg + dr * alpha
             nu_avg = nu_avg + dr * nu
             gradr_sub_grada_avg = gradr_sub_grada_avg + dr * max(0d0,s%gradr(k) - s%grada(k))
             g_avg = g_avg + dr * s%grav(k)
-            eta_avg = eta_avg + dz * eta
+            eta_avg = eta_avg + dr * eta
+            beta_avg = beta_avg + dr * s%Pgas(k)/s%P(k)
          end do
          alpha_avg = alpha_avg / dz
          nu_avg = nu_avg / dz
          gradr_sub_grada_avg = gradr_sub_grada_avg / dz
          g_avg = g_avg / dz
          eta_avg = eta_avg / dz
+         hp_avg = hp_avg / dz
+         beta_avg = beta_avg / dz
 
          Pr = nu_avg / alpha_avg
          Re = v * dz / nu_avg
-         Ra = pow3(dz) * g_avg * gradr_sub_grada_avg / (nu_avg * alpha_avg)
+         Ra = pow3(dz) * (dz / hp_avg) * ((4d0 - 3d0 * beta_avg) / beta_avg) * g_avg * gradr_sub_grada_avg / (nu_avg * alpha_avg)
 
       end subroutine compute_Ra_Re
 
