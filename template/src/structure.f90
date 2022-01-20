@@ -152,18 +152,19 @@ contains
             dr = s%dm(k) / (4d0 * pi * pow2(s%r(k)) * s%rho(k))
             brunt2_CZ = brunt2_CZ + dr * pow2(s%conv_vel(k)/s%scale_height(k))
             dz = dz + dr
-            if (dz > 0.3d0*s%scale_height(k_top) .or. k == k_bottom) then
+            if (dz > 0.3d0*s%scale_height(k_top) .or. k == k_bottom .or. s%brunt_N2(k) > 0d0) then
                 brunt2_CZ = brunt2_CZ / dz
                 exit
             end if
         end do
 
         dz = 0d0
+        brunt2_RZ = 0d0
         do k=k_top-1,1,-1! k_top is the top-most cell of the CZ, so we start the RZ at k_top-1
             dr = s%dm(k) / (4d0 * pi * pow2(s%r(k)) * s%rho(k))
             brunt2_RZ = brunt2_RZ + dr * s%brunt_N2(k)
             dz = dz + dr
-            if (dz > 0.3d0*s%scale_height(k_top) .or. k == 1) then
+            if (dz > 0.3d0*s%scale_height(k_top) .or. k == 1 .or. s%brunt_N2(k) < 0d0) then
                 brunt2_RZ = brunt2_RZ / dz
                 exit
             end if
@@ -186,22 +187,24 @@ contains
         end if
 
         dz = 0d0
+        brunt2_CZ = 0d0
         do k=k_bottom,k_top,-1
             dr = s%dm(k) / (4d0 * pi * pow2(s%r(k)) * s%rho(k))
             brunt2_CZ = brunt2_CZ + dr * pow2(s%conv_vel(k)/s%scale_height(k))
             dz = dz + dr
-            if (dz > 0.3d0*s%scale_height(k_bottom) .or. k == k_bottom) then
+            if (dz > 0.3d0*s%scale_height(k_bottom) .or. k == k_bottom .or. s%brunt_N2(k) > 0d0) then
                 brunt2_CZ = brunt2_CZ / dz
                 exit
             end if
         end do
 
         dz = 0d0
+        brunt2_RZ = 0d0
         do k=k_bottom+1,s%nz ! k_bottom is the bottom-most cell of the CZ, so we start the RZ at k_bottom+1
             dr = s%dm(k) / (4d0 * pi * pow2(s%r(k)) * s%rho(k))
             brunt2_RZ = brunt2_RZ + dr * s%brunt_N2(k)
             dz = dz + dr
-            if (dz > 0.3d0*s%scale_height(k_bottom) .or. k == s%nz) then
+            if (dz > 0.3d0*s%scale_height(k_bottom) .or. k == s%nz .or. s%brunt_N2(k) < 0d0) then
                 brunt2_RZ = brunt2_RZ / dz
                 exit
             end if
