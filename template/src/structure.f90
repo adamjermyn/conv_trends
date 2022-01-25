@@ -152,7 +152,7 @@ contains
             dr = s%dm(k) / (4d0 * pi * pow2(s%r(k)) * s%rho(k))
             brunt2_CZ = brunt2_CZ + dr * pow2(s%conv_vel(k)/s%scale_height(k))
             dz = dz + dr
-            if (dz > 0.3d0*s%scale_height(k_top) .or. k == k_bottom .or. s%brunt_N2(k) > 0d0) then
+            if (dz > 0.3d0*s%scale_height(k_top) .or. k == k_bottom .or. s%conv_vel(k) == 0d0) then
                 brunt2_CZ = brunt2_CZ / dz
                 exit
             end if
@@ -164,7 +164,7 @@ contains
             dr = s%dm(k) / (4d0 * pi * pow2(s%r(k)) * s%rho(k))
             brunt2_RZ = brunt2_RZ + dr * s%brunt_N2(k)
             dz = dz + dr
-            if (dz > 0.3d0*s%scale_height(k_top) .or. k == 1 .or. s%brunt_N2(k) < 0d0) then
+            if (dz > 0.3d0*s%scale_height(k_top) .or. k == 1 .or. s%conv_vel(k) > 0d0) then
                 brunt2_RZ = brunt2_RZ / dz
                 exit
             end if
@@ -192,7 +192,7 @@ contains
             dr = s%dm(k) / (4d0 * pi * pow2(s%r(k)) * s%rho(k))
             brunt2_CZ = brunt2_CZ + dr * pow2(s%conv_vel(k)/s%scale_height(k))
             dz = dz + dr
-            if (dz > 0.3d0*s%scale_height(k_bottom) .or. k == k_bottom .or. s%brunt_N2(k) > 0d0) then
+            if (dz > 0.3d0*s%scale_height(k_bottom) .or. k == k_bottom .or. s%conv_vel(k) == 0d0) then
                 brunt2_CZ = brunt2_CZ / dz
                 exit
             end if
@@ -204,7 +204,7 @@ contains
             dr = s%dm(k) / (4d0 * pi * pow2(s%r(k)) * s%rho(k))
             brunt2_RZ = brunt2_RZ + dr * s%brunt_N2(k)
             dz = dz + dr
-            if (dz > 0.3d0*s%scale_height(k_bottom) .or. k == s%nz .or. s%brunt_N2(k) < 0d0) then
+            if (dz > 0.3d0*s%scale_height(k_bottom) .or. k == s%nz .or. s%conv_vel(k) > 0d0) then
                 brunt2_RZ = brunt2_RZ / dz
                 exit
             end if
