@@ -102,26 +102,7 @@
    ! information about abundance transitions
 
       he_core_mass
-      c_core_mass
-      o_core_mass
-      si_core_mass
       fe_core_mass
-
-   ! info about locations where optical depth is 10 or 100
-
-      tau10_mass ! mass in solar units where optical depth = 10
-      tau10_radius ! radius in solar units where optical depth = 10
-      !tau10_lgP ! estimate for log10(P) at tau = 10
-      ! tau10_lgT ! estimate for log10(T) at tau = 10
-      !tau10_lgRho ! estimate for log10(density) at tau = 10
-      !tau10_L ! estimate for L/Lsun at tau = 10
-
-      tau100_mass ! location in solar units where optical depth = 100
-      tau100_radius ! location in solar units where optical depth = 100
-      !tau100_lgP ! estimates for values at tau = 100
-      tau100_lgT
-      !tau100_lgRho
-      !tau100_L
 
    ! timescales
 

@@ -194,7 +194,6 @@ pressure_scale_height ! in Rsun units
    !gradT_div_grada ! gradT/grada at cell boundary 
 !   log_mlt_Gamma ! convective efficiency
    
-   super_ad ! max(0,gradT-grada) at cell boundary 
    log_D_mix ! log10 diffusion coefficient for mixing in units of cm^2/second (Eulerian)
    !log_D_mix_non_rotation
    !log_sig_mix ! sig(k) is mixing flow across face k in (gm sec^1)
