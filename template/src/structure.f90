@@ -231,7 +231,7 @@ contains
         ! = (P/Rho) dlnP/dlnRho|T
         ! = (P/Rho) chiRho
 
-        v = (s%P(k) / s%rho(k)) * s%chiRho(k)
+        v = sqrt((s%P(k) / s%rho(k)) * s%chiRho(k))
     end subroutine sound_speed_isothermal
 
     subroutine gravity(s,k,g)
