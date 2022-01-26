@@ -26,7 +26,7 @@ contains
         type (star_info), pointer :: s
         integer, intent(in) :: k
         real(dp), intent(out) :: beta
-        beta = s%Prad(k)/s%P(k)       
+        beta = s%Prad(k)/s%Peos(k)       
     end subroutine Prad_div_P
 
     subroutine dtau_dr(s,k,dtdr)
@@ -231,7 +231,7 @@ contains
         ! = (P/Rho) dlnP/dlnRho|T
         ! = (P/Rho) chiRho
 
-        v = sqrt((s%P(k) / s%rho(k)) * s%chiRho(k))
+        v = sqrt((s%Peos(k) / s%rho(k)) * s%chiRho(k))
     end subroutine sound_speed_isothermal
 
     subroutine gravity(s,k,g)

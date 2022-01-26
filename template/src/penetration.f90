@@ -14,6 +14,7 @@ contains
       subroutine compute_dm_core(s, id, m_core, dm_core, dr_core, dr_core_div_h, r_core, rho_core_top)
          use eos_def
          use star_lib
+         use kap_def
          type (star_info), pointer :: s
          integer, intent(in) :: id
          real(dp), parameter :: f = 0.86d0
@@ -26,6 +27,7 @@ contains
          real(dp) :: dres_dxa(num_eos_d_dxa_results,s% species)
          real(dp) :: kap, dlnkap_dlnRho, dlnkap_dlnT, frac_Type2
          real(dp) :: gradr(s%nz), grada(s%nz)
+         real(dp) :: kap_fracs(num_kap_fracs)
 
          nz = s%nz
 
@@ -49,10 +51,11 @@ contains
             call star_get_kap( &
                id, 0, s%zbar(nz), s%xa(:,nz), logRho, logT, &
                res(i_lnfree_e), dres_dlnRho(i_lnfree_e), dres_dlnT(i_lnfree_e), &
-               kap, dlnkap_dlnRho, dlnkap_dlnT, frac_Type2, ierr)
+               res(i_eta), dres_dlnRho(i_eta), dres_dlnT(i_eta), &
+               kap_fracs, kap, dlnkap_dlnRho, dlnkap_dlnT, ierr)
 
             Pr = one_third*crad*T*T*T*T
-            gradr(j) = s%P(j)*kap*s%L(j) / (16*pi*clight*s%m(j)*s%cgrav(j)*Pr)
+            gradr(j) = s%Peos(j)*kap*s%L(j) / (16*pi*clight*s%m(j)*s%cgrav(j)*Pr)
 
          end do
 
