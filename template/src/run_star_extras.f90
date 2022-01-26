@@ -158,7 +158,7 @@
            ierr = 0
            call star_ptr(id, s, ierr)
            if (ierr /= 0) return
-           how_many_extra_history_columns = 225
+           how_many_extra_history_columns = 231
         end function how_many_extra_history_columns
 
 
@@ -184,7 +184,7 @@
            character(len=100) :: name
 
            ! Quantities that are one per CZ
-           integer, parameter :: nQs = 37
+           integer, parameter :: nQs = 38
            integer, parameter :: nZs = 6 ! Max # of CZs
            integer :: nFound
            logical :: sc_exists(nZs)
@@ -280,8 +280,12 @@
                outputs(i,k) = s%rho(sc_bottom(k))/s%rho(sc_top(k))
 
                i = i+1
-               Q_names(i) = 'sound_speed'
-               call r_average(s, sc_top(k), sc_bottom(k), sound_speed, outputs(i,k))
+               Q_names(i) = 'sound_speed_adiabatic'
+               call r_average(s, sc_top(k), sc_bottom(k), sound_speed_adiabatic, outputs(i,k))
+
+               i = i+1
+               Q_names(i) = 'sound_speed_isothermal'
+               call r_average(s, sc_top(k), sc_bottom(k), sound_speed_isothermal, outputs(i,k))
 
                i = i+1
                Q_names(i) = 'gravity'

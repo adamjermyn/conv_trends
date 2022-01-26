@@ -214,13 +214,25 @@ contains
 
     end subroutine stiffness_bottom
 
-    subroutine sound_speed(s,k,v)
+    subroutine sound_speed_adiabatic(s,k,v)
         type (star_info), pointer :: s
         integer, intent(in) :: k
         real(dp), intent(out) :: v
 
         v = s%csound(k)
-    end subroutine sound_speed
+    end subroutine sound_speed_adiabatic
+
+    subroutine sound_speed_isothermal(s,k,v)
+        type (star_info), pointer :: s
+        integer, intent(in) :: k
+        real(dp), intent(out) :: v
+        ! The isothermal sound speed is
+        ! dP/dRho|T
+        ! = (P/Rho) dlnP/dlnRho|T
+        ! = (P/Rho) chiRho
+
+        v = (s%P(k) / s%rho(k)) * s%chiRho(k)
+    end subroutine sound_speed_isothermal
 
     subroutine gravity(s,k,g)
         type (star_info), pointer :: s
