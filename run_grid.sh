@@ -8,7 +8,7 @@ export OMP_NUM_THREADS=2
 
 echo "Compiling..."
 cd template
-./mk > ../mk.out
+./mk &> ../mk.out
 cd ..
 echo "Done compiling."
 
@@ -23,7 +23,7 @@ do
     cd runs/$j
     sed -i "s/MMM/$j/" inlist_project
     echo "Running Model..." $j
-    ./rn > rn.out &
+    ./rn &> rn.out &
     cd ../../
 done
 
