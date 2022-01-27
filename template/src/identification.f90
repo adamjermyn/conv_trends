@@ -10,38 +10,29 @@ contains
 
 
         subroutine get_conv_regions(s, max_num_conv_regions, num_conv_regions)
-           ! use mlt_def, only: convective_mixing
-           type (star_info), pointer :: s
-           integer, intent(in) :: max_num_conv_regions
-           integer, intent(out) :: num_conv_regions
-           integer :: prev_type, cur_type, cur_top, n, k
-           include 'formats'
+            type (star_info), pointer :: s
+            integer, intent(in) :: max_num_conv_regions
+            integer, intent(out) :: num_conv_regions
+            logical :: in_CZ
+            integer :: n, k
+            include 'formats'
 
-           cur_type = s% mixing_type(1)
-           cur_top = 1
-           n = 0
+            n = 0
+            in_CZ = (s%brunt_N2(1) < 0d0)
 
-           ! Find all convective regions in the outer layers down to T_limit
-           do k = 2, s%nz
-              prev_type = cur_type
-              cur_type = s% mixing_type(k)
-              if (cur_type == prev_type .and. k < s%nz) cycle
-              ! change of type from k-1 to k
-              if (prev_type == convective_mixing) then
-                 n = n + 1
-                 s% mixing_region_type(n) = prev_type
-                 s% mixing_region_top(n) = cur_top
-                 if (k == s%nz) then
-                    s% mixing_region_bottom(n) = k
-                 else
-                    s% mixing_region_bottom(n) = k-1
-                 end if
-                 if (n == max_num_conv_regions) exit
-              end if
-              cur_top = k
-           end do
+            do k=2,s%nz
+               if (in_CZ .and. s%brunt_N2(k) >= 0d0) then
+                  ! change of type from k-1 to k, no longer convective
+                  in_CZ = .false.
+                  n = n+1
+                  s% mixing_region_bottom(n) = k-1
+               else if (.not. in_CZ .and. s%brunt_N2(k) < 0d0) then
+                  in_CZ = .true.
+               end if
+               if (n == max_num_conv_regions) exit
+            end do
 
-           num_conv_regions = n
+            num_conv_regions = n
 
         end subroutine get_conv_regions
 
