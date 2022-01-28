@@ -95,7 +95,7 @@
          nz = s% nz
          vals(1:nz,1:nfcns) => vals1(1:nz*nfcns)
          do k=1,nz
-            vals(k,1) = 15d0 * log10(s%brunt_N2(k) + 1d-14)
+            vals(k,1) = 15d0 * log10(s%brunt_N2(k) + 1d-18)
          end do
       end subroutine other_mesh_fcn_data  
 
