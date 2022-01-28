@@ -158,7 +158,7 @@
            ierr = 0
            call star_ptr(id, s, ierr)
            if (ierr /= 0) return
-           how_many_extra_history_columns = 231
+           how_many_extra_history_columns = 255
         end function how_many_extra_history_columns
 
 
@@ -184,7 +184,7 @@
            character(len=100) :: name
 
            ! Quantities that are one per CZ
-           integer, parameter :: nQs = 38
+           integer, parameter :: nQs = 42
            integer, parameter :: nZs = 6 ! Max # of CZs
            integer :: nFound
            logical :: sc_exists(nZs)
@@ -238,6 +238,22 @@
            do k=1,nZs
             if (sc_exists(k)) then
                i = 0
+
+               i = i+1
+               Q_names(i) = 'bottom_m_div_mstar'
+               outputs(i,k) = s%m(sc_bottom(k))/s%m(1)
+
+               i = i+1
+               Q_names(i) = 'top_m_div_mstar'
+               outputs(i,k) = s%m(sc_top(k))/s%m(1)
+
+               i = i+1
+               Q_names(i) = 'bottom_index'
+               outputs(i,k) = sc_bottom(k)
+
+               i = i+1
+               Q_names(i) = 'top_index'
+               outputs(i,k) = sc_top(k)
 
                i = i+1
                Q_names(i) = 'viscosity'
