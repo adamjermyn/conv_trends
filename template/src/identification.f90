@@ -19,7 +19,7 @@ contains
 
             n = 1
             in_CZ = (s%brunt_N2(1) < 0d0)
-            if (in_CZ) s% mixing_region_top = 1
+            if (in_CZ) s% mixing_region_top(n) = 1
                
             do k=2,s%nz
                if (in_CZ .and. s%brunt_N2(k) >= 0d0) then
@@ -31,11 +31,15 @@ contains
                   s% mixing_region_top(n) = k
                   in_CZ = .true.
                end if
-               if (n == max_num_conv_regions) exit
+               if (n == max_num_conv_regions+1) exit
             end do
             if (in_CZ) s%mixing_region_bottom(n) = s%nz
 
-            num_conv_regions = n
+            write(*,*) s%mixing_region_top(1:n)
+            write(*,*) s%mixing_region_bottom(1:n)
+            write(*,*) ''
+
+            num_conv_regions = n-1
 
         end subroutine get_conv_regions
 
