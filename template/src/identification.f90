@@ -17,29 +17,39 @@ contains
             integer :: n, k
             include 'formats'
 
+            s% mixing_region_top = -1
+            s% mixing_region_bottom = -1
+
             n = 1
             in_CZ = (s%brunt_N2(1) < 0d0)
             if (in_CZ) s% mixing_region_top(n) = 1
-               
+            
+!            write(*,*) 'T->.',n, in_CZ, s%mixing_region_top(1)
+
             do k=2,s%nz
                if (in_CZ .and. s%brunt_N2(k) >= 0d0) then
                   ! change of type from k-1 to k, no longer convective
                   in_CZ = .false.
                   s% mixing_region_bottom(n) = k-1
                   n = n+1
+!                  write(*,*) 'C->R',n, k,in_CZ, s%mixing_region_bottom(n-1)
                else if (.not. in_CZ .and. s%brunt_N2(k) < 0d0) then
                   s% mixing_region_top(n) = k
                   in_CZ = .true.
+!                  write(*,*) 'R->C',n, k,in_CZ, s%mixing_region_top(n)
                end if
                if (n == max_num_conv_regions+1) exit
             end do
             if (in_CZ) s%mixing_region_bottom(n) = s%nz
+!            write(*,*) '.->B',n, in_CZ, s%mixing_region_bottom(n)
+!            write(*,*) ''
 
-            write(*,*) s%mixing_region_top(1:n)
-            write(*,*) s%mixing_region_bottom(1:n)
-            write(*,*) ''
+!            write(*,*) s%mixing_region_top(1:n)
+!            write(*,*) s%mixing_region_bottom(1:n)
+!            write(*,*) s%nz, n, in_CZ
+!            write(*,*) ''
 
-            num_conv_regions = n-1
+            num_conv_regions = n
 
         end subroutine get_conv_regions
 
