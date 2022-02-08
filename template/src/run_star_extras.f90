@@ -469,6 +469,7 @@
 
         subroutine data_for_extra_profile_columns(id, n, nz, names, vals, ierr)
            use diffusivities
+           use magnetism
            use star_def, only: star_info, maxlen_profile_column_name
            use const_def, only: dp
            use math_lib, only: safe_log10
@@ -513,8 +514,6 @@
             call thermal_diffusivity(s, k, vals(k,5))
             call B_shutoff_conv(s, k, vals(k,6))
            end do
-
-
 
         end subroutine data_for_extra_profile_columns
 
