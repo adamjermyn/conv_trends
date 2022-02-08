@@ -158,7 +158,7 @@
            ierr = 0
            call star_ptr(id, s, ierr)
            if (ierr /= 0) return
-           how_many_extra_history_columns = 255
+           how_many_extra_history_columns = 258
         end function how_many_extra_history_columns
 
 
@@ -196,7 +196,7 @@
            real(dp) :: Ra(nZs), Pm(nZs), Pr(nZs), nu(nZs), alpha(nZs), eta(nZs), dr(nZs)
 
            ! Quantities that are one per star
-           integer, parameter :: nOffs = 3
+           integer, parameter :: nOffs = 6
            character(len=100) :: one_off_names(nOffs)
            real(dp) :: one_off_outputs(nOffs)
            real(dp) :: wind
@@ -424,6 +424,15 @@
            one_off_outputs(i) = wind
            one_off_names(i) = 'wind_mdot'; i=i+1
 
+           call B_shutoff_down_to_tau(s,3d0,one_off_outputs(i))
+           one_off_names(i) = 'B_shutoff_down_to_tau_3'; i=i+1
+
+           call B_shutoff_down_to_tau(s,1d1,one_off_outputs(i))
+           one_off_names(i) = 'B_shutoff_down_to_tau_10'; i=i+1
+
+           call B_shutoff_down_to_tau(s,1d2,one_off_outputs(i))
+           one_off_names(i) = 'B_shutoff_down_to_tau_100'; i=i+1
+
 
            ! Pack output 
            k = 1
@@ -454,7 +463,7 @@
            ierr = 0
            call star_ptr(id, s, ierr)
            if (ierr /= 0) return
-           how_many_extra_profile_columns = 5
+           how_many_extra_profile_columns = 6
         end function how_many_extra_profile_columns
 
 
@@ -498,10 +507,14 @@
 
            names(4) = 'nu'
            names(5) = 'alpha'
+           names(6) = 'B_shutoff'
            do k=1,nz
             call viscosity(s, k, vals(k,4))
             call thermal_diffusivity(s, k, vals(k,5))
-         end do
+            call B_shutoff_conv(s, k, vals(k,6))
+           end do
+
+
 
         end subroutine data_for_extra_profile_columns
 

@@ -106,5 +106,21 @@ contains
 
     end subroutine B_shutoff_conv
 
+    subroutine B_shutoff_down_to_tau(s,tau,B)
+        type (star_info), pointer :: s
+        real(dp), intent(in) :: tau
+        real(dp), intent(out) :: B
+
+        integer :: k
+        real(dp) :: B_shut
+
+        B = 0d0
+        do k=1,s%nz
+            call B_shutoff_conv(s,k,B_shut)
+            B = max(B, B_shut)
+            if (s%tau(k) > tau) return
+        end do
+
+    end subroutine B_shutoff_down_to_tau
 
 end module magnetism
