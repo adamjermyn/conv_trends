@@ -158,7 +158,7 @@
            ierr = 0
            call star_ptr(id, s, ierr)
            if (ierr /= 0) return
-           how_many_extra_history_columns = 258
+           how_many_extra_history_columns = 260
         end function how_many_extra_history_columns
 
 
@@ -196,7 +196,7 @@
            real(dp) :: Ra(nZs), Pm(nZs), Pr(nZs), nu(nZs), alpha(nZs), eta(nZs), dr(nZs)
 
            ! Quantities that are one per star
-           integer, parameter :: nOffs = 6
+           integer, parameter :: nOffs = 8
            character(len=100) :: one_off_names(nOffs)
            real(dp) :: one_off_outputs(nOffs)
            real(dp) :: wind
@@ -432,6 +432,12 @@
 
            call B_shutoff_down_to_tau(s,1d2,one_off_outputs(i))
            one_off_names(i) = 'B_shutoff_down_to_tau_100'; i=i+1
+
+           call B_shutoff_down_to_tau(s,1d3,one_off_outputs(i))
+           one_off_names(i) = 'B_shutoff_down_to_tau_1000'; i=i+1
+
+           call B_shutoff_down_to_tau(s,1d4,one_off_outputs(i))
+           one_off_names(i) = 'B_shutoff_down_to_tau_1d4'; i=i+1
 
 
            ! Pack output 
