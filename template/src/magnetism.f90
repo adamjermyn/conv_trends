@@ -101,7 +101,9 @@ contains
         B = 4 * pi * s%rho(k) * pow2(s%csound(k))
         B = B * Q * delta_grad / (1 - Q * delta_grad + dGamma)
 
-        if (B < 0d0) B = 0d0
+        if (B < 0d0) then ! Approximate formula for handling extreme cases
+            B = P * delta_grad
+        end if
         B = sqrt(B)
 
     end subroutine B_shutoff_conv
