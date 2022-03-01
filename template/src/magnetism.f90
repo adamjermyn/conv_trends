@@ -102,7 +102,7 @@ contains
         B = B * Q * delta_grad / (1 - Q * delta_grad + dGamma)
 
         if (B < 0d0) then ! Approximate formula for handling extreme cases
-            B = P * delta_grad
+            B = s%Peos(k) * delta_grad
         end if
         B = sqrt(B)
 
