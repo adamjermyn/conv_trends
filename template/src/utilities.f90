@@ -110,12 +110,13 @@ contains
         avg = integral_dr / dr
     end subroutine r_average
 
-    subroutine r_average_hp_frac(s,k_top,k_bottom,h_frac,in_CZ,at_top,do1,avg)
+    subroutine r_average_hp_frac(s,k_top,k_bottom,h_frac,in_CZ,at_top,integrate,do1,avg)
         type (star_info), pointer :: s
         integer, intent(in) :: k_top,k_bottom
         real(dp), intent(in) :: h_frac
         logical, intent(in) :: in_CZ ! true means average on the CZ side of the boundary, false means RZ side
         logical, intent(in) :: at_top ! true means average at the outer boundary, false means inner boundary
+        logical, intent(in) :: integrate ! true means integrate, false means average
         interface
         subroutine do1(s,k,val)
            use star_def
@@ -140,7 +141,9 @@ contains
                     dz = dz + dr
 
                     if (dz > h_frac * s%scale_height(k_top) .or. k == k_bottom .or. s%brunt_N2(k) >= 0d0) then
-                        avg = avg / dz
+                        if (.not. integrate) then
+                            avg = avg / dz
+                        end if
                         exit
                     end if
                 end do
@@ -153,7 +156,9 @@ contains
                     dz = dz + dr
 
                     if (dz > h_frac * s%scale_height(k_top) .or. k == 1 .or. s%brunt_N2(k) < 0d0) then
-                        avg = avg / dz
+                        if (.not. integrate) then
+                            avg = avg / dz
+                        end if
                         exit
                     end if
                 end do
@@ -168,7 +173,9 @@ contains
                     dz = dz + dr
 
                     if (dz > h_frac * s%scale_height(k_bottom) .or. k == k_top .or. s%brunt_N2(k) >= 0d0) then
-                        avg = avg / dz
+                        if (.not. integrate) then
+                            avg = avg / dz
+                        end if
                         exit
                     end if
                 end do
@@ -181,7 +188,9 @@ contains
                     dz = dz + dr
 
                     if (dz > h_frac * s%scale_height(k_bottom) .or. k == s%nz .or. s%brunt_N2(k) < 0d0) then
-                        avg = avg / dz
+                        if (.not. integrate) then
+                            avg = avg / dz
+                        end if
                         exit
                     end if
                 end do
