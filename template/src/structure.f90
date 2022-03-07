@@ -4,6 +4,7 @@ use star_lib
 use star_def
 use const_def
 use math_lib
+use utilities
 
 implicit none
 contains
@@ -146,33 +147,10 @@ contains
             return
         end if
 
-        dz = 0d0
-        brunt2_CZ = 0d0
-        do k=k_top,k_bottom
-            dr = s%dm(k) / (4d0 * pi * pow2(s%r(k)) * s%rho(k))
-            brunt2_CZ = brunt2_CZ + dr * pow2(s%conv_vel(k)/s%scale_height(k))
-            dz = dz + dr
-            if (dz > 0.3d0*s%scale_height(k_top) .or. k == k_bottom .or. s%brunt_N2(k) >= 0d0) then
-                brunt2_CZ = brunt2_CZ / dz
-                exit
-            end if
-        end do
-
-        dz = 0d0
-        brunt2_RZ = 0d0
-        do k=k_top-1,1,-1! k_top is the top-most cell of the CZ, so we start the RZ at k_top-1
-            dr = s%dm(k) / (4d0 * pi * pow2(s%r(k)) * s%rho(k))
-            brunt2_RZ = brunt2_RZ + dr * max(0d0,s%brunt_N2(k))
-            dz = dz + dr
-            if (dz > 0.3d0*s%scale_height(k_top) .or. k == 1 .or. s%brunt_N2(k) < 0d0) then
-                brunt2_RZ = brunt2_RZ / dz
-                exit
-            end if
-        end do
-
+        call r_average_hp_frac(s,k_top,k_bottom,0.3d0,.true.,.true.,fc2,brunt2_CZ)
+        call r_average_hp_frac(s,k_top,k_bottom,0.3d0,.false.,.true.,N2_RZ,brunt2_RZ)
 
         val = brunt2_RZ / brunt2_CZ
-
     end subroutine stiffness_top
 
     subroutine stiffness_bottom(s,k_top,k_bottom,val)
@@ -187,33 +165,27 @@ contains
             return
         end if
 
-        dz = 0d0
-        brunt2_CZ = 0d0
-        do k=k_bottom,k_top,-1
-            dr = s%dm(k) / (4d0 * pi * pow2(s%r(k)) * s%rho(k))
-            brunt2_CZ = brunt2_CZ + dr * pow2(s%conv_vel(k)/s%scale_height(k))
-            dz = dz + dr
-            if (dz > 0.3d0*s%scale_height(k_bottom) .or. k == k_top .or. s%brunt_N2(k) >= 0d0) then
-                brunt2_CZ = brunt2_CZ / dz
-                exit
-            end if
-        end do
-
-        dz = 0d0
-        brunt2_RZ = 0d0
-        do k=k_bottom+1,s%nz ! k_bottom is the bottom-most cell of the CZ, so we start the RZ at k_bottom+1
-            dr = s%dm(k) / (4d0 * pi * pow2(s%r(k)) * s%rho(k))
-            brunt2_RZ = brunt2_RZ + dr * max(0d0,s%brunt_N2(k))
-            dz = dz + dr
-            if (dz > 0.3d0*s%scale_height(k_bottom) .or. k == s%nz .or. s%brunt_N2(k) < 0d0) then
-                brunt2_RZ = brunt2_RZ / dz
-                exit
-            end if
-        end do
+        call r_average_hp_frac(s,k_top,k_bottom,0.3d0,.true.,.false.,fc2,brunt2_CZ)
+        call r_average_hp_frac(s,k_top,k_bottom,0.3d0,.false.,.false.,N2_RZ,brunt2_RZ)
 
         val = brunt2_RZ / brunt2_CZ
-
     end subroutine stiffness_bottom
+
+    subroutine fc2(s,k,val)
+        type (star_info), pointer :: s
+        integer, intent(in) :: k
+        real(dp), intent(out) :: val
+
+        val = pow2(s%conv_vel(k)/s%scale_height(k))
+    end subroutine fc2
+
+    subroutine N2_RZ(s,k,N2)
+        type (star_info), pointer :: s
+        integer, intent(in) :: k
+        real(dp), intent(out) :: N2
+
+        N2 = max(0d0,s%brunt_N2(k))
+    end subroutine N2_RZ
 
     subroutine sound_speed_adiabatic(s,k,v)
         type (star_info), pointer :: s
