@@ -147,8 +147,8 @@ contains
             return
         end if
 
-        call r_average_hp_frac(s,k_top,k_bottom,0.3d0,.true.,.true.,fc2,brunt2_CZ)
-        call r_average_hp_frac(s,k_top,k_bottom,0.3d0,.false.,.true.,N2_RZ,brunt2_RZ)
+        call r_average_hp_frac(s,k_top,k_bottom,1.00d0,.true.,.true.,fc2,brunt2_CZ)
+        call r_average_hp_frac(s,k_top,k_bottom,1.00d0,.false.,.true.,N2_RZ,brunt2_RZ)
 
         val = brunt2_RZ / brunt2_CZ
     end subroutine stiffness_top
@@ -165,8 +165,8 @@ contains
             return
         end if
 
-        call r_average_hp_frac(s,k_top,k_bottom,0.3d0,.true.,.false.,fc2,brunt2_CZ)
-        call r_average_hp_frac(s,k_top,k_bottom,0.3d0,.false.,.false.,N2_RZ,brunt2_RZ)
+        call r_average_hp_frac(s,k_top,k_bottom,1.00d0,.true.,.false.,fc2,brunt2_CZ)
+        call r_average_hp_frac(s,k_top,k_bottom,1.00d0,.false.,.false.,N2_RZ,brunt2_RZ)
 
         val = brunt2_RZ / brunt2_CZ
     end subroutine stiffness_bottom

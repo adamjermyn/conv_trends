@@ -411,83 +411,83 @@
 
                i = i+1
                Q_names(i) = 'viscosity_bottom'
-               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 0.3d0, .true., .false., .false., viscosity, outputs(i,k))
+               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 1.00d0, .true., .false., .false., viscosity, outputs(i,k))
 
                i = i+1
                Q_names(i) = 'viscosity_top'
-               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 0.3d0, .true., .true., .false., viscosity, outputs(i,k))
+               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 1.00d0, .true., .true., .false., viscosity, outputs(i,k))
 
                i = i+1
                Q_names(i) = 'thermal_diffusivity_bottom'
-               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 0.3d0, .true., .false., .false., thermal_diffusivity, outputs(i,k))
+               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 1.00d0, .true., .false., .false., thermal_diffusivity, outputs(i,k))
 
                i = i+1
                Q_names(i) = 'thermal_diffusivity_top'
-               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 0.3d0, .true., .true., .false., thermal_diffusivity, outputs(i,k))
+               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 1.00d0, .true., .true., .false., thermal_diffusivity, outputs(i,k))
 
                i = i+1
                Q_names(i) = 'magnetic_diffusivity_bottom'
-               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 0.3d0, .true., .false., .false., magnetic_diffusivity, outputs(i,k))
+               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 1.00d0, .true., .false., .false., magnetic_diffusivity, outputs(i,k))
 
                i = i+1
                Q_names(i) = 'magnetic_diffusivity_top'
-               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 0.3d0, .true., .true., .false., magnetic_diffusivity, outputs(i,k))
+               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 1.00d0, .true., .true., .false., magnetic_diffusivity, outputs(i,k))
 
                i = i+1
                Q_names(i) = 'Prad_div_P_bottom'
-               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 0.3d0, .true., .false., .false., Prad_div_P, outputs(i,k))
+               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 1.00d0, .true., .false., .false., Prad_div_P, outputs(i,k))
 
                i = i+1
                Q_names(i) = 'Prad_div_P_top'
-               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 0.3d0, .true., .true., .false., Prad_div_P, outputs(i,k))
+               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 1.00d0, .true., .true., .false., Prad_div_P, outputs(i,k))
 
                i = i+1
                Q_names(i) = 'sound_speed_adiabatic_bottom'
-               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 0.3d0, .true., .false., .false., sound_speed_adiabatic, outputs(i,k))
+               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 1.00d0, .true., .false., .false., sound_speed_adiabatic, outputs(i,k))
 
                i = i+1
                Q_names(i) = 'sound_speed_adiabatic_top'
-               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 0.3d0, .true., .true., .false., sound_speed_adiabatic, outputs(i,k))
+               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 1.00d0, .true., .true., .false., sound_speed_adiabatic, outputs(i,k))
 
                i = i+1
                Q_names(i) = 'conv_vel_bottom'
-               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 0.3d0, .true., .false., .false., conv_vel, outputs(i,k))
+               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 1.00d0, .true., .false., .false., conv_vel, outputs(i,k))
 
                i = i+1
                Q_names(i) = 'conv_vel_top'
-               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 0.3d0, .true., .true., .false., conv_vel, outputs(i,k))
+               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 1.00d0, .true., .true., .false., conv_vel, outputs(i,k))
 
                i = i+1
                Q_names(i) = 'L_conv_div_L_bottom'
-               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 0.3d0, .true., .false., .false., L_conv_div_L, outputs(i,k))
+               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 1.00d0, .true., .false., .false., L_conv_div_L, outputs(i,k))
 
                i = i+1
                Q_names(i) = 'L_conv_div_L_top'
-               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 0.3d0, .true., .true., .false., L_conv_div_L, outputs(i,k))
+               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 1.00d0, .true., .true., .false., L_conv_div_L, outputs(i,k))
 
                i = i+1
                Q_names(i) = 'L_div_Ledd_bottom'
-               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 0.3d0, .true., .false., .false., L_div_Ledd, outputs(i,k))
+               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 1.00d0, .true., .false., .false., L_div_Ledd, outputs(i,k))
 
                i = i+1
                Q_names(i) = 'L_div_Ledd_top'
-               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 0.3d0, .true., .true., .false., L_div_Ledd, outputs(i,k))
+               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 1.00d0, .true., .true., .false., L_div_Ledd, outputs(i,k))
 
                i = i+1
                Q_names(i) = 'gravity_bottom'
-               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 0.3d0, .true., .false., .false., gravity, outputs(i,k))
+               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 1.00d0, .true., .false., .false., gravity, outputs(i,k))
 
                i = i+1
                Q_names(i) = 'gravity_top'
-               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 0.3d0, .true., .true., .false., gravity, outputs(i,k))
+               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 1.00d0, .true., .true., .false., gravity, outputs(i,k))
 
                i = i+1
                Q_names(i) = 'avg_region_bottom'
-               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 0.3d0, .true., .false., .true., unity, outputs(i,k))
+               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 1.00d0, .true., .false., .true., unity, outputs(i,k))
 
                i = i+1
                Q_names(i) = 'avg_region_top'
-               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 0.3d0, .true., .true., .true., unity, outputs(i,k))
+               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 1.00d0, .true., .true., .true., unity, outputs(i,k))
 
 
             end if
