@@ -373,7 +373,7 @@
 
                i = i+1
                Q_names(i) = 'cz_bottom_tau'
-               call bottom_tau(s,k,outputs(i,k))
+               call bottom_tau(s,sc_bottom(k),outputs(i,k))
 
                i = i+1
                Q_names(i) = 'B_shutoff'! This is a face quantity defined on the inside of the CZ, so want to go from (top+1...bottom-1)
