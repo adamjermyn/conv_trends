@@ -57,6 +57,12 @@
       delta_lgL_limit = 0.005
 
 
+      overshoot_scheme(1) = 'step'
+      overshoot_zone_type(1) = 'any'
+      overshoot_zone_loc(1) = 'any'
+      overshoot_bdy_loc = 'any'
+      overshoot_f(1) = 0.2d0
+      overshoot_f0(1) = 0.1d0
 
 / ! end of controls namelist
 
