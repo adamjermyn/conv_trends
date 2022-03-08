@@ -50,6 +50,18 @@ contains
         end if
     end subroutine bottom_r
 
+    subroutine bottom_T(s,k,T)
+        type (star_info), pointer :: s
+        integer, intent(in) :: k
+        real(dp), intent(out) :: T
+
+        if (k == s%nz) then
+            T = s%T(s%nz) ! dT/dr vanishes at the center
+        else
+            T = s%T(k+1)
+        end if
+    end subroutine bottom_T
+
     subroutine bottom_tau(s,k,tau)
         type (star_info), pointer :: s
         integer, intent(in) :: k
