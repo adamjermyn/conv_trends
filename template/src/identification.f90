@@ -68,7 +68,7 @@ contains
            if ( sc_top > 0 ) then
              if (s%m(sc_bottom)/s%m(1) < 3d-2 .or. sc_bottom > s%nz - 3 .and. s%m(1) > Msun) then ! We call it an envelope CZ at low masses.
                sc_type = 'Core'
-             else if (s%T(sc_bottom) > T_FeCZ(2)) then ! It's not a core, but it's also not one of the four subsurface zones
+             else if (s%T(sc_bottom) > T_FeCZ(2) .and. s%m(1) < 2d0*Msun) then ! It's not a core, but it's also not one of the four subsurface zones
                sc_type = 'Envelope'
              else if (s% T(sc_top) < T_HI(2)) then
                sc_type = 'HI'
