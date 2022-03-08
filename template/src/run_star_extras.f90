@@ -404,18 +404,18 @@
                call compute_B_diffusion_time(s, sc_top(k), outputs(i,k)) ! This one handles going to the outer face inside the call.
 
                i = i+1
-               Q_names(i) = 'Lr_div_Ledd'! This is a face quantity but it's defined perfectly well on the edges of the CZ, so we go from (top,bottom+1)
+               Q_names(i) = 'L_div_Ledd'! This is a face quantity but it's defined perfectly well on the edges of the CZ, so we go from (top,bottom+1)
                                          ! L=0 at the center so we can just exclude that if the CZ runs all the way to the center.
-               call r_average(s, sc_top(k), min(s%nz,sc_bottom(k)+1), Lr_div_Ledd, outputs(i,k))
+               call r_average(s, sc_top(k), min(s%nz,sc_bottom(k)+1), L_div_Ledd, outputs(i,k))
 
                i = i+1
                Q_names(i) = 'Nusselt'! This is a face quantity defined on the inside of the CZ, so want to go from (top+1...bottom-1)
                call r_average(s, sc_top(k)+1, sc_bottom(k)-1, Nusselt, outputs(i,k))
 
                i = i+1
-               Q_names(i) = 'Lr_div_Ledd_max'! This is a face quantity but it's defined perfectly well on the edges of the CZ, so we go from (top,bottom+1).
+               Q_names(i) = 'L_div_Ledd_max'! This is a face quantity but it's defined perfectly well on the edges of the CZ, so we go from (top,bottom+1).
                                             ! L=0 at the center so we can just exclude that if the CZ runs all the way to the center.
-               call max_val(s, sc_top(k), min(s%nz,sc_bottom(k)+1), Lr_div_Ledd, outputs(i,k))
+               call max_val(s, sc_top(k), min(s%nz,sc_bottom(k)+1), L_div_Ledd, outputs(i,k))
 
                i = i+1
                Q_names(i) = 'viscosity_bottom'
@@ -474,12 +474,12 @@
                call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 1.00d0, .true., .true., .false., L_conv_div_L, outputs(i,k))
 
                i = i+1
-               Q_names(i) = 'Lr_div_Ledd_bottom'
-               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 1.00d0, .true., .false., .false., Lr_div_Ledd, outputs(i,k))
+               Q_names(i) = 'L_div_Ledd_bottom'
+               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 1.00d0, .true., .false., .false., L_div_Ledd, outputs(i,k))
 
                i = i+1
-               Q_names(i) = 'Lr_div_Ledd_top'
-               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 1.00d0, .true., .true., .false., Lr_div_Ledd, outputs(i,k))
+               Q_names(i) = 'L_div_Ledd_top'
+               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 1.00d0, .true., .true., .false., L_div_Ledd, outputs(i,k))
 
                i = i+1
                Q_names(i) = 'gravity_bottom'

@@ -111,13 +111,13 @@ contains
         val = s%L_conv(k) / s%L(k)
     end subroutine L_conv_div_L
 
-    subroutine Lr_div_Ledd(s,k,val)
+    subroutine L_div_Ledd(s,k,val)
         type (star_info), pointer :: s
         integer, intent(in) :: k
         real(dp), intent(out) :: val
 
-        val = (1d0 - s%L_conv(k) / s%L(k)) * s%L(k) / (4d0 * pi * standard_cgrav * s%m(k) * clight / s%opacity(k))
-    end subroutine Lr_div_Ledd
+        val = s%L(k) / (4d0 * pi * standard_cgrav * s%m(k) * clight / s%opacity(k))
+    end subroutine L_div_Ledd
 
     subroutine turnover(s,k_top,k_bottom,val)
         type (star_info), pointer :: s
