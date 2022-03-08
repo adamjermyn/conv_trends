@@ -353,7 +353,7 @@
 
                i = i+1
                Q_names(i) = 'bottom_T'
-               call bottom_T(s, sc_bottom(k), outputs(i,k))
+               outputs(i,k) = s%T(sc_bottom(k))
 
                i = i+1
                Q_names(i) = 'cz_top_r'
