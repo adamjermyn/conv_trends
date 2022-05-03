@@ -158,7 +158,7 @@
            ierr = 0
            call star_ptr(id, s, ierr)
            if (ierr /= 0) return
-           how_many_extra_history_columns = 392
+           how_many_extra_history_columns = 398
         end function how_many_extra_history_columns
 
 
@@ -184,7 +184,7 @@
            character(len=100) :: name
 
            ! Quantities that are one per CZ
-           integer, parameter :: nQs = 64
+           integer, parameter :: nQs = 65
            integer, parameter :: nZs = 6 ! Max # of CZs
            integer :: nFound
            logical :: sc_exists(nZs)
@@ -407,6 +407,11 @@
                Q_names(i) = 'L_div_Ledd'! This is a face quantity but it's defined perfectly well on the edges of the CZ, so we go from (top,bottom+1)
                                          ! L=0 at the center so we can just exclude that if the CZ runs all the way to the center.
                call r_average(s, sc_top(k), min(s%nz,sc_bottom(k)+1), L_div_Ledd, outputs(i,k))
+
+               i = i+1
+               Q_names(i) = 'Lrad_div_Ledd'! This is a face quantity but it's defined perfectly well on the edges of the CZ, so we go from (top,bottom+1)
+                                         ! L=0 at the center so we can just exclude that if the CZ runs all the way to the center.
+               call r_average(s, sc_top(k), min(s%nz,sc_bottom(k)+1), Lrad_div_Ledd, outputs(i,k))
 
                i = i+1
                Q_names(i) = 'Nusselt'! This is a face quantity defined on the inside of the CZ, so want to go from (top+1...bottom-1)
