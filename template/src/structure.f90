@@ -125,7 +125,7 @@ contains
         real(dp), intent(out) :: val
 
         val = (s%L(k) - s%L_conv(k)) / (4d0 * pi * standard_cgrav * s%m(k) * clight / s%opacity(k))
-    end subroutine L_div_Ledd
+    end subroutine Lrad_div_Ledd
 
     subroutine turnover(s,k_top,k_bottom,val)
         type (star_info), pointer :: s
