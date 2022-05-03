@@ -42,7 +42,7 @@
       xa_central_lower_limit(1) = 0.01
 
       ! RESOLUTION
-      mesh_delta_coeff = 0.5
+      mesh_delta_coeff = 0.2
       time_delta_coeff = 1.0
 
       ! GOLD TOLERANCES
