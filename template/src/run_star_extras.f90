@@ -502,6 +502,15 @@
                Q_names(i) = 'avg_region_top'
                call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 1.00d0, .true., .true., .true., unity, outputs(i,k))
 
+               i = i+1
+               Q_names(i) = 'Lrad_div_Ledd_bottom'
+               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 1.00d0, .true., .false., .false., Lrad_div_Ledd, outputs(i,k))
+
+               i = i+1
+               Q_names(i) = 'Lrad_div_Ledd_top'
+               call r_average_hp_frac(s, sc_top(k), sc_bottom(k), 1.00d0, .true., .true., .false., Lrad_div_Ledd, outputs(i,k))
+
+
 
             end if
            end do
