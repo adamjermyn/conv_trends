@@ -158,7 +158,7 @@
            ierr = 0
            call star_ptr(id, s, ierr)
            if (ierr /= 0) return
-           how_many_extra_history_columns = 398
+           how_many_extra_history_columns = 410
         end function how_many_extra_history_columns
 
 
@@ -184,7 +184,7 @@
            character(len=100) :: name
 
            ! Quantities that are one per CZ
-           integer, parameter :: nQs = 65
+           integer, parameter :: nQs = 67
            integer, parameter :: nZs = 6 ! Max # of CZs
            integer :: nFound
            logical :: sc_exists(nZs)
